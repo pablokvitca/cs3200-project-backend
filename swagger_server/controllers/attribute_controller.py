@@ -4,6 +4,8 @@ import six
 from swagger_server.models.attribute import Attribute  # noqa: E501
 from swagger_server import util
 
+import sqlalchemy
+from sqlalchemy import create_engine
 
 def add_attribute(body):  # noqa: E501
     """Add a attribute to the classdeck
@@ -17,6 +19,27 @@ def add_attribute(body):  # noqa: E501
     """
     if connexion.request.is_json:
         body = Attribute.from_dict(connexion.request.get_json())  # noqa: E501
+        settings = {
+            'userName': "root",           # The name of the MySQL account to use (or empty for anonymous)
+            'password': "WRITE PASSWORD HERE",           # The password for the MySQL account (or empty for anonymous)
+            'serverName': "127.0.0.1",    # The name of the computer running MySQL
+            'portNumber': 3306,           # The port of the MySQL server (default is 3306)
+            'dbName': "projectcs3200",             # The name of the database we are testing with (this default is installed with MySQL)
+        }
+        print('Trying to connect to database')
+        conn = create_engine('mysql+mysqldb://{0[userName]}:{0[password]}@{0[serverName]}:{0[portNumber]}/{0[dbName]}'.format(settings))
+        print('Connected to database')
+        tableName = "attributes"
+        insert_string = """
+            INSERT INTO {} (
+                name,
+                nu_path)
+            VALUES (
+                "{}",
+                {});
+            """.format(tableName, body.name, body.nupath)
+        print(insert_string)
+        conn.execute(insert_string)
     return 'do some magic!'
 
 
