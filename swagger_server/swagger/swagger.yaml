@@ -1293,9 +1293,7 @@ paths:
         405:
           description: "Invalid input"
       security:
-      - classdeck_auth:
-        - "read"
-        - "write"
+      - classdeck_auth: []
       x-swagger-router-controller: "swagger_server.controllers.schedule_option_controller"
     put:
       tags:
@@ -1321,9 +1319,7 @@ paths:
         405:
           description: "Validation exception"
       security:
-      - classdeck_auth:
-        - "read"
-        - "write"
+      - classdeck_auth: []
       x-swagger-router-controller: "swagger_server.controllers.schedule_option_controller"
   /schedule_option/{schedule_option_id}:
     get:
@@ -1351,9 +1347,7 @@ paths:
         404:
           description: "ScheduleOption not found"
       security:
-      - classdeck_auth:
-        - "read"
-        - "write"
+      - classdeck_auth: []
       x-swagger-router-controller: "swagger_server.controllers.schedule_option_controller"
     delete:
       tags:
@@ -1375,9 +1369,7 @@ paths:
         404:
           description: "ScheduleOption not found"
       security:
-      - classdeck_auth:
-        - "read"
-        - "write"
+      - classdeck_auth: []
       x-swagger-router-controller: "swagger_server.controllers.schedule_option_controller"
   /schedule_option_section:
     post:
@@ -1400,9 +1392,7 @@ paths:
         405:
           description: "Invalid input"
       security:
-      - classdeck_auth:
-        - "read"
-        - "write"
+      - classdeck_auth: []
       x-swagger-router-controller: "swagger_server.controllers.schedule_option_section_controller"
     put:
       tags:
@@ -1429,9 +1419,7 @@ paths:
         405:
           description: "Validation exception"
       security:
-      - classdeck_auth:
-        - "read"
-        - "write"
+      - classdeck_auth: []
       x-swagger-router-controller: "swagger_server.controllers.schedule_option_section_controller"
   /schedule_option_section/{schedule_id}/{crn}:
     get:
@@ -1468,9 +1456,7 @@ paths:
         404:
           description: "ScheduleOptionSection not found"
       security:
-      - classdeck_auth:
-        - "read"
-        - "write"
+      - classdeck_auth: []
       x-swagger-router-controller: "swagger_server.controllers.schedule_option_section_controller"
     delete:
       tags:
@@ -1501,9 +1487,7 @@ paths:
         404:
           description: "ScheduleOptionSection not found"
       security:
-      - classdeck_auth:
-        - "read"
-        - "write"
+      - classdeck_auth: []
       x-swagger-router-controller: "swagger_server.controllers.schedule_option_section_controller"
   /section:
     post:
@@ -2087,9 +2071,7 @@ paths:
         404:
           description: "Student not found"
       security:
-      - classdeck_auth:
-        - "read"
-        - "write"
+      - classdeck_auth: []
       x-swagger-router-controller: "swagger_server.controllers.student_controller"
     put:
       tags:
@@ -2118,9 +2100,7 @@ paths:
         404:
           description: "Student not found"
       security:
-      - classdeck_auth:
-        - "read"
-        - "write"
+      - classdeck_auth: []
       x-swagger-router-controller: "swagger_server.controllers.student_controller"
     delete:
       tags:
@@ -2142,9 +2122,7 @@ paths:
         404:
           description: "Student not found"
       security:
-      - classdeck_auth:
-        - "read"
-        - "write"
+      - classdeck_auth: []
       x-swagger-router-controller: "swagger_server.controllers.student_controller"
   /student_taken_classes:
     post:
@@ -2167,9 +2145,7 @@ paths:
         405:
           description: "Invalid input"
       security:
-      - classdeck_auth:
-        - "read"
-        - "write"
+      - classdeck_auth: []
       x-swagger-router-controller: "swagger_server.controllers.student_taken_classes_controller"
     put:
       tags:
@@ -2195,9 +2171,7 @@ paths:
         405:
           description: "Validation exception"
       security:
-      - classdeck_auth:
-        - "read"
-        - "write"
+      - classdeck_auth: []
       x-swagger-router-controller: "swagger_server.controllers.student_taken_classes_controller"
   /student_taken_classes/{nuid}/{class_dept}/{class_number}:
     get:
@@ -2242,9 +2216,7 @@ paths:
         404:
           description: "StudentTakenClasses not found"
       security:
-      - classdeck_auth:
-        - "read"
-        - "write"
+      - classdeck_auth: []
       x-swagger-router-controller: "swagger_server.controllers.student_taken_classes_controller"
     delete:
       tags:
@@ -2283,18 +2255,12 @@ paths:
         404:
           description: "StudentTakenClasses not found"
       security:
-      - classdeck_auth:
-        - "read"
-        - "write"
+      - classdeck_auth: []
       x-swagger-router-controller: "swagger_server.controllers.student_taken_classes_controller"
 securityDefinitions:
   classdeck_auth:
-    type: "oauth2"
-    authorizationUrl: "http://classdeck.swagger.io/oauth/dialog"
-    flow: "implicit"
-    scopes:
-      write: "write anything on your account"
-      read: "read anything on your account"
+    type: basic
+    x-basicInfoFunc: app.basic_auth
   internal_auth:
     type: "apiKey"
     name: "internal_auth"
