@@ -28,19 +28,17 @@ def add_pursued_degree(body):  # noqa: E501
             INSERT INTO pursued_degree (
                 NUID,
                 degree_ID)
-            VALUES (
-                "{0}",
-                {1});
+            VALUES ({0}, {1});
             """.format(body.nuid, body.degree_id)
         try:
             session_cookie = connexion.request.cookies.get("session")
-            session_NUID = connexion.verify_JWT(session_cookie)
-            if (session_NUID == body.nuid):
+            session_NUID = connexion.JWT_verify(session_cookie)
+            if (session_NUID == str(body.nuid)):
                 connexion.DB.execute(insert_string)
                 return "Accepted", 201
             else:
                 return "Forbidden", 403
-        except exc.IntegrityError:
+        except exc.IntegrityError as err:
             return "Could not add pursued degree", 406
         except KeyError:
             return "Forbidden", 403
@@ -70,7 +68,7 @@ def delete_pursued_degree(nuid, degree_id):  # noqa: E501
             """.format(body.nuid, body.degree_id)
         try:
             session_cookie = connexion.request.cookies.get("session")
-            session_NUID = connexion.verify_JWT(session_cookie)
+            session_NUID = connexion.JWT_verify(session_cookie)
             if (session_NUID == body.nuid):
                 connexion.DB.execute(delete_string)
                 return "Accepted", 201

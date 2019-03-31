@@ -128,7 +128,7 @@ def login_student(nuid, password):  # noqa: E501
 
     for row in result_user:
         resp = make_response("Student logged in", 200)
-        session = '{{ nuid: {0}, jwt: {1} }}'.format(nuid, "secret")
+        session = connexion.JWT_generate_token(nuid)
         resp.set_cookie("session", session)
         return resp
     else:
