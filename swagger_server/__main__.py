@@ -75,7 +75,7 @@ def decode_token(token):
         six.raise_from(Unauthorized, e)
 
 
-def _current_timestamp() -> int:
+def _current_timestamp():
     return int(time.time())
 
 
@@ -97,7 +97,7 @@ def close_db(error):
 def connect_db():
     print('Trying to connect to database')
     db_engine = create_engine(
-        'mysql+mysqldb://{0[userName]}:{0[password]}@{0[serverName]}:{0[portNumber]}/{0[dbName]}'.format(settings))
+        'mysql+pymysql://{0[userName]}:{0[password]}@{0[serverName]}:{0[portNumber]}/{0[dbName]}'.format(settings))
     db_conn = db_engine.connect()
     print('Connected to database')
     return db_conn
