@@ -239,7 +239,7 @@ paths:
           description: "Class not found"
       security:
       - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.class_attribute_controller"
+      x-swagger-router-controller: "swagger_server.controllers.class_prereq_group_controller"
   /class_prereq_group/{class_prereq_group_id}:
     get:
       tags:
