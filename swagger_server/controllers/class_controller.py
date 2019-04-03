@@ -4,21 +4,8 @@ import six
 from swagger_server.models.model_class import ModelClass  # noqa: E501
 from swagger_server import util
 
-
-def add_class(body):  # noqa: E501
-    """Add a class to the classdeck
-
-     # noqa: E501
-
-    :param body: Class object that needs to be added to the system
-    :type body: dict | bytes
-
-    :rtype: None
-    """
-    if connexion.request.is_json:
-        body = ModelClass.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
-
+from sqlalchemy import types
+from sqlalchemy import exc
 
 def get_class_by_id(class_department, class_number):  # noqa: E501
     """Find class by ID
@@ -43,4 +30,51 @@ def list_classes():  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+    select_string = """
+            SELECT * FROM class
+            """
+    try:
+        result = connexion.DB.execute(select_string)
+        res = []
+        for row in result:
+            r = ModelClass.from_dict(row)
+            res.append({
+                'class_dept': row["class_dept"],
+                'class_number': row["class_number"],
+                'class_level': row["class_level"],
+                'name': row["name"],
+                'description': row["description"],
+                'credit_hours': row["credit_hours"]
+            })
+        return res, 200
+    except exc.IntegrityError:
+        return "Internal Server Error", 500
+
+
+def list_classes_filtered(): # noqa: E501
+    """List all classes
+
+    Returns all classes # noqa: E501
+
+
+    :rtype: None
+    """
+    select_string = """
+              SELECT * FROM class
+              """
+    try:
+        result = connexion.DB.execute(select_string)
+        res = []
+        for row in result:
+            res.append({
+                'class_dept': row["class_dept"],
+                'class_number': row["class_number"],
+                'class_level': row["class_level"],
+                'name': row["name"],
+                'description': row["description"],
+                'credit_hours': row["credit_hours"]
+            })
+            res = ModelClass.from_dict(res)
+        return res, 200
+    except exc.IntegrityError:
+        return "Internal Server Error", 500

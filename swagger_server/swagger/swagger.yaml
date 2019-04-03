@@ -115,19 +115,10 @@ paths:
     get:
       tags:
       - "class"
-      summary: "Add a class to the classdeck"
-      operationId: "add_class"
-      consumes:
-      - "application/json"
+      summary: "List all classes filtered"
+      operationId: "list_classes_filtered"
       produces:
       - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Class object that needs to be added to the system"
-        required: true
-        schema:
-          $ref: "#/definitions/Class"
       responses:
         405:
           description: "Invalid input"
