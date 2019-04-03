@@ -19,21 +19,10 @@ class TestClassController(BaseTestCase):
         """
         body = ModelClass()
         response = self.client.open(
-            '/pablokvitca/classdeck-api/1.0.0/class',
-            method='POST',
+            '/pablokvitca/classdeck-api/1.0.0/class/filtered',
+            method='GET',
             data=json.dumps(body),
             content_type='application/json')
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
-
-    def test_delete_class(self):
-        """Test case for delete_class
-
-        Deletes a class
-        """
-        response = self.client.open(
-            '/pablokvitca/classdeck-api/1.0.0/class/{class_department}/{class_number}'.format(class_department='class_department_example', class_number=9999),
-            method='DELETE')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -48,17 +37,14 @@ class TestClassController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_update_class(self):
-        """Test case for update_class
+    def test_list_classes(self):
+        """Test case for list_classes
 
-        Update an existing class
+        List all classes
         """
-        body = ModelClass()
         response = self.client.open(
             '/pablokvitca/classdeck-api/1.0.0/class',
-            method='PUT',
-            data=json.dumps(body),
-            content_type='application/json')
+            method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 

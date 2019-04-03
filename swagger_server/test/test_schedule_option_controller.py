@@ -48,6 +48,17 @@ class TestScheduleOptionController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+    def test_get_schedule_option_by_nuid(self):
+        """Test case for get_schedule_option_by_nuid
+
+        List schedule_option by NUID
+        """
+        response = self.client.open(
+            '/pablokvitca/classdeck-api/1.0.0/schedule_option/list_by_student/{nuid}'.format(nuid=1),
+            method='GET')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
     def test_update_schedule_option(self):
         """Test case for update_schedule_option
 

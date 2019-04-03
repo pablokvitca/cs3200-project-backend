@@ -5,28 +5,11 @@ from swagger_server.models.section import Section  # noqa: E501
 from swagger_server import util
 
 
-def add_section(body):  # noqa: E501
+def add_section():  # noqa: E501
     """Add a section to the classdeck
 
      # noqa: E501
 
-    :param body: Section object that needs to be added to the system
-    :type body: dict | bytes
-
-    :rtype: None
-    """
-    if connexion.request.is_json:
-        body = Section.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
-
-
-def delete_section(crn):  # noqa: E501
-    """Deletes a section
-
-     # noqa: E501
-
-    :param crn: Section CRN to delete
-    :type crn: int
 
     :rtype: None
     """
@@ -46,16 +29,12 @@ def get_section_by_crn(crn):  # noqa: E501
     return 'do some magic!'
 
 
-def update_section(body):  # noqa: E501
-    """Update an existing section
+def list_sections():  # noqa: E501
+    """Lists all sections
 
      # noqa: E501
 
-    :param body: Section object that needs to be updated in the system
-    :type body: dict | bytes
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        body = Section.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'

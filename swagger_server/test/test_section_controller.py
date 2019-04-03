@@ -17,23 +17,10 @@ class TestSectionController(BaseTestCase):
 
         Add a section to the classdeck
         """
-        body = Section()
         response = self.client.open(
-            '/pablokvitca/classdeck-api/1.0.0/section',
+            '/pablokvitca/classdeck-api/1.0.0/section/filtered',
             method='POST',
-            data=json.dumps(body),
             content_type='application/json')
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
-
-    def test_delete_section(self):
-        """Test case for delete_section
-
-        Deletes a section
-        """
-        response = self.client.open(
-            '/pablokvitca/classdeck-api/1.0.0/section/{crn}'.format(crn=99999),
-            method='DELETE')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -48,17 +35,14 @@ class TestSectionController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_update_section(self):
-        """Test case for update_section
+    def test_list_sections(self):
+        """Test case for list_sections
 
-        Update an existing section
+        Lists all sections
         """
-        body = Section()
         response = self.client.open(
             '/pablokvitca/classdeck-api/1.0.0/section',
-            method='PUT',
-            data=json.dumps(body),
-            content_type='application/json')
+            method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
