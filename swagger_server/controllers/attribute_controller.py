@@ -7,6 +7,7 @@ from swagger_server import util
 from sqlalchemy import types
 from sqlalchemy import exc
 
+
 def add_attribute(body):  # noqa: E501
     """Add a attribute to the classdeck
 
@@ -75,7 +76,7 @@ def get_attribute_by_name(attribute_name):  # noqa: E501
         for row in result:
             res = {
                 'name': row["name"],
-                'nupath': row["nu_path"] 
+                'nupath': row["nu_path"]
             }
             res = Attribute.from_dict(res)
             return res, 200
@@ -114,3 +115,14 @@ def update_attribute(body):  # noqa: E501
         except exc.IntegrityError:
             return "Already Exists", 202
     return "Bad Request", 400
+
+
+def list_attributes():  # noqa: E501
+    """List all attributes
+
+    Returns all attributes # noqa: E501
+
+
+    :rtype: None
+    """
+    return 'do some magic!'

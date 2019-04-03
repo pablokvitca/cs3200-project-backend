@@ -37,28 +37,14 @@ class TestPursuedDegreeController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_get_pursued_degree_by_id(self):
-        """Test case for get_pursued_degree_by_id
+    def test_get_pursued_degree_by_nuid(self):
+        """Test case for get_pursued_degree_by_nuid
 
-        Find pursued_degree by ID
+        List pursued_degree by NUID
         """
         response = self.client.open(
-            '/pablokvitca/classdeck-api/1.0.0/pursued_degree/{nuid}/{degree_id}'.format(nuid=1, degree_id=1),
+            '/pablokvitca/classdeck-api/1.0.0/pursued_degree/{nuid}'.format(nuid=1),
             method='GET')
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
-
-    def test_update_pursued_degree(self):
-        """Test case for update_pursued_degree
-
-        Update an existing pursued_degree
-        """
-        body = PursuedDegree()
-        response = self.client.open(
-            '/pablokvitca/classdeck-api/1.0.0/pursued_degree',
-            method='PUT',
-            data=json.dumps(body),
-            content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 

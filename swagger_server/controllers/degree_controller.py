@@ -20,6 +20,19 @@ def add_degree(body):  # noqa: E501
     return 'do some magic!'
 
 
+def degree_list_prereqs(degree_id):  # noqa: E501
+    """List the prereqs for a given degree
+
+     # noqa: E501
+
+    :param degree_id: Degree id to delete
+    :type degree_id: int
+
+    :rtype: None
+    """
+    return 'do some magic!'
+
+
 def delete_degree(degree_id):  # noqa: E501
     """Deletes a degree
 
@@ -42,6 +55,30 @@ def get_degree_by_id(degree_id):  # noqa: E501
     :type degree_id: int
 
     :rtype: Degree
+    """
+    return 'do some magic!'
+
+
+def list_degrees():  # noqa: E501
+    """List all degrees
+
+     # noqa: E501
+
+
+    :rtype: None
+    """
+    return 'do some magic!'
+
+
+def list_degrees_by_college(college_id):  # noqa: E501
+    """List all degrees in the given college
+
+     # noqa: E501
+
+    :param college_id: ID of college related to the degrees to return
+    :type college_id: int
+
+    :rtype: None
     """
     return 'do some magic!'
 

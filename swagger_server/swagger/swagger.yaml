@@ -55,57 +55,18 @@ schemes:
 - "http"
 paths:
   /attribute:
-    post:
+    get:
       tags:
       - "attribute"
-      summary: "Add a attribute to the classdeck"
-      operationId: "add_attribute"
-      consumes:
-      - "application/json"
+      summary: "List all attributes"
+      description: "Returns all attributes"
+      operationId: "list_attributes"
       produces:
       - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Attribute object that needs to be added to the system"
-        required: true
-        schema:
-          $ref: "#/definitions/Attribute"
+      parameters: []
       responses:
         200:
-          description: "Succesfully added given attribute"
-        405:
-          description: "Invalid input"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.attribute_controller"
-    put:
-      tags:
-      - "attribute"
-      summary: "Update an existing attribute"
-      operationId: "update_attribute"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Attribute object that needs to be updated in the system"
-        required: true
-        schema:
-          $ref: "#/definitions/Attribute"
-      responses:
-        200:
-          description: "Succesfully updated attribute"
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Attribute not found"
-        405:
-          description: "Validation exception"
-      security:
-      - internal_auth: []
+          description: "successful operation"
       x-swagger-router-controller: "swagger_server.controllers.attribute_controller"
   /attribute/{attribute_name}:
     get:
@@ -136,31 +97,22 @@ paths:
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.attribute_controller"
-    delete:
+  /class:
+    get:
       tags:
-      - "attribute"
-      summary: "Deletes a attribute"
-      operationId: "delete_attribute"
+      - "class"
+      summary: "List all classes"
+      description: "Returns all classes"
+      operationId: "list_classes"
       produces:
       - "application/json"
-      parameters:
-      - name: "attribute_name"
-        in: "path"
-        description: "name of the attribute to delete"
-        required: true
-        type: "string"
-        maxLength: 255
-        minLength: 1
+      parameters: []
       responses:
-        400:
-          description: "Invalid name supplied"
-        404:
-          description: "Attribute not found"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.attribute_controller"
-  /class:
-    post:
+        200:
+          description: "successful operation"
+      x-swagger-router-controller: "swagger_server.controllers.class_controller"
+  /class/filtered:
+    get:
       tags:
       - "class"
       summary: "Add a class to the classdeck"
@@ -179,32 +131,6 @@ paths:
       responses:
         405:
           description: "Invalid input"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.class_controller"
-    put:
-      tags:
-      - "class"
-      summary: "Update an existing class"
-      operationId: "update_class"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Class object that needs to be updated in the system"
-        required: true
-        schema:
-          $ref: "#/definitions/Class"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Class not found"
-        405:
-          description: "Validation exception"
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.class_controller"
@@ -244,102 +170,16 @@ paths:
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.class_controller"
-    delete:
-      tags:
-      - "class"
-      summary: "Deletes a class"
-      operationId: "delete_class"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "class_department"
-        in: "path"
-        description: "short code of the department that offers the class to delete"
-        required: true
-        type: "string"
-        maxLength: 5
-        minLength: 2
-      - name: "class_number"
-        in: "path"
-        description: "class number of the class to delete"
-        required: true
-        type: "integer"
-        maximum: 9999
-        minimum: 0
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Class not found"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.class_controller"
-  /class_attribute:
-    post:
-      tags:
-      - "class_attribute"
-      summary: "Add a class_attribute to the classdeck"
-      operationId: "add_class_attribute"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "ClassAttribute object that needs to be added to the system"
-        required: true
-        schema:
-          $ref: "#/definitions/ClassAttribute"
-      responses:
-        405:
-          description: "Invalid input"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.class_attribute_controller"
-    put:
-      tags:
-      - "class_attribute"
-      summary: "Update an existing class_attribute"
-      operationId: "update_class_attribute"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "ClassAttribute object that needs to be updated in the system"
-        required: true
-        schema:
-          $ref: "#/definitions/ClassAttribute"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "ClassAttribute not found"
-        405:
-          description: "Validation exception"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.class_attribute_controller"
-  /class_attribute/{attribute_name}/{class_department}/{class_number}:
+  /class_attribute/{class_department}/{class_number}:
     get:
       tags:
       - "class_attribute"
-      summary: "Find class_attribute by ID"
-      description: "Returns a single class_attribute"
-      operationId: "get_class_attribute_by_id"
+      summary: "Lists attributes for the given class"
+      description: "Returns a attributes for the given class"
+      operationId: "get_class_attributes"
       produces:
       - "application/json"
       parameters:
-      - name: "attribute_name"
-        in: "path"
-        description: "name of the Attribute related to the ClassAttribute to return"
-        required: true
-        type: "string"
-        maxLength: 255
-        minLength: 1
       - name: "class_department"
         in: "path"
         description: "short code of the Department related to the Class related to\
@@ -358,103 +198,48 @@ paths:
       responses:
         200:
           description: "successful operation"
-          schema:
-            $ref: "#/definitions/ClassAttribute"
         400:
-          description: "Invalid ID supplied"
+          description: "Invalid Class supplied"
         404:
-          description: "ClassAttribute not found"
+          description: "Class not found"
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.class_attribute_controller"
-    delete:
+  /class_prereq_group/{class_department}/{class_number}:
+    get:
       tags:
-      - "class_attribute"
-      summary: "Deletes a class_attribute"
-      operationId: "delete_class_attribute"
+      - "class_prereq_group"
+      summary: "Lists prereqs for the given class"
+      description: "Returns a prereqs for the given class"
+      operationId: "get_class_prereqs"
       produces:
       - "application/json"
       parameters:
-      - name: "attribute_name"
-        in: "path"
-        description: "name of the Attribute related to the ClassAttribute to delete"
-        required: true
-        type: "string"
-        maxLength: 255
-        minLength: 1
       - name: "class_department"
         in: "path"
         description: "short code of the Department related to the Class related to\
-          \ the ClassAttribute to delete"
+          \ the ClassPrereqGroup to return"
         required: true
         type: "string"
         maxLength: 5
         minLength: 2
       - name: "class_number"
         in: "path"
-        description: "number of the Class related to the ClassAttribute to delete"
+        description: "number of the Class related to the ClassPrereqGroup to return"
         required: true
         type: "integer"
         maximum: 9999
         minimum: 0
-        format: "int32"
       responses:
+        200:
+          description: "successful operation"
         400:
-          description: "Invalid ID supplied"
+          description: "Invalid Class supplied"
         404:
-          description: "ClassAttribute not found"
+          description: "Class not found"
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.class_attribute_controller"
-  /class_prereq_group:
-    post:
-      tags:
-      - "class_prereq_group"
-      summary: "Add a class_prereq_group to the classdeck"
-      operationId: "add_class_prereq_group"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "ClassPrereqGroup object that needs to be added to the system"
-        required: true
-        schema:
-          $ref: "#/definitions/ClassPrereqGroup"
-      responses:
-        405:
-          description: "Invalid input"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.class_prereq_group_controller"
-    put:
-      tags:
-      - "class_prereq_group"
-      summary: "Update an existing class_prereq_group"
-      operationId: "update_class_prereq_group"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "ClassPrereqGroup object that needs to be updated in the system"
-        required: true
-        schema:
-          $ref: "#/definitions/ClassPrereqGroup"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "ClassPrereqGroup not found"
-        405:
-          description: "Validation exception"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.class_prereq_group_controller"
   /class_prereq_group/{class_prereq_group_id}:
     get:
       tags:
@@ -483,74 +268,29 @@ paths:
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.class_prereq_group_controller"
-    delete:
+  /college:
+    get:
       tags:
-      - "class_prereq_group"
-      summary: "Deletes a class_prereq_group"
-      operationId: "delete_class_prereq_group"
+      - "college"
+      summary: "List all colleges"
+      description: "Returns all colleges"
+      operationId: "list_colleges"
       produces:
       - "application/json"
       parameters:
-      - name: "class_prereq_group_id"
+      - name: "college_id"
         in: "path"
-        description: "ClassPrereqGroup id to delete"
+        description: "ID of college to return"
         required: true
         type: "integer"
         minimum: 0
       responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "ClassPrereqGroup not found"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.class_prereq_group_controller"
-  /college:
-    post:
-      tags:
-      - "college"
-      summary: "Add a college to the classdeck"
-      operationId: "add_college"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "College object that needs to be added to the system"
-        required: true
-        schema:
-          $ref: "#/definitions/College"
-      responses:
-        405:
-          description: "Invalid input"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.college_controller"
-    put:
-      tags:
-      - "college"
-      summary: "Update an existing college"
-      operationId: "update_college"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "College object that needs to be updated in the system"
-        required: true
-        schema:
-          $ref: "#/definitions/College"
-      responses:
+        200:
+          description: "successful operation"
         400:
           description: "Invalid ID supplied"
         404:
           description: "College not found"
-        405:
-          description: "Validation exception"
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.college_controller"
@@ -582,29 +322,23 @@ paths:
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.college_controller"
-    delete:
+  /degree:
+    get:
       tags:
-      - "college"
-      summary: "Deletes a college"
-      operationId: "delete_college"
+      - "degree"
+      summary: "List all degrees"
+      operationId: "list_degrees"
       produces:
       - "application/json"
-      parameters:
-      - name: "college_id"
-        in: "path"
-        description: "College  id to delete"
-        required: true
-        type: "integer"
-        minimum: 0
+      parameters: []
       responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "College not found"
+        200:
+          description: "Successful operation"
+        405:
+          description: "Error"
       security:
       - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.college_controller"
-  /degree:
+      x-swagger-router-controller: "swagger_server.controllers.degree_controller"
     post:
       tags:
       - "degree"
@@ -653,6 +387,29 @@ paths:
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.degree_controller"
+  /degree/by_college/{college_id}:
+    get:
+      tags:
+      - "degree"
+      summary: "List all degrees in the given college"
+      operationId: "list_degrees_by_college"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "college_id"
+        in: "path"
+        description: "ID of college related to the degrees to return"
+        required: true
+        type: "integer"
+        minimum: 0
+      responses:
+        200:
+          description: "Successful operation"
+        405:
+          description: "Error"
+      security:
+      - internal_auth: []
+      x-swagger-router-controller: "swagger_server.controllers.degree_controller"
   /degree/{degree_id}:
     get:
       tags:
@@ -686,6 +443,29 @@ paths:
       - "degree"
       summary: "Deletes a degree"
       operationId: "delete_degree"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "degree_id"
+        in: "path"
+        description: "Degree id to delete"
+        required: true
+        type: "integer"
+        minimum: 0
+      responses:
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Degree not found"
+      security:
+      - internal_auth: []
+      x-swagger-router-controller: "swagger_server.controllers.degree_controller"
+  /degree/list_prereqsites/{degree_id}:
+    get:
+      tags:
+      - "degree"
+      summary: "List the prereqs for a given degree"
+      operationId: "degree_list_prereqs"
       produces:
       - "application/json"
       parameters:
@@ -803,51 +583,19 @@ paths:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.degree_prereq_group_controller"
   /department:
-    post:
+    get:
       tags:
       - "department"
-      summary: "Add a department to the classdeck"
-      operationId: "add_department"
+      summary: "List all departments"
+      operationId: "list_department"
       consumes:
       - "application/json"
       produces:
       - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Department object that needs to be added to the system"
-        required: true
-        schema:
-          $ref: "#/definitions/Department"
+      parameters: []
       responses:
-        405:
-          description: "Invalid input"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.department_controller"
-    put:
-      tags:
-      - "department"
-      summary: "Update an existing department"
-      operationId: "update_department"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Department object that needs to be updated in the system"
-        required: true
-        schema:
-          $ref: "#/definitions/Department"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Department not found"
-        405:
-          description: "Validation exception"
+        200:
+          description: "Successful operation"
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.department_controller"
@@ -880,287 +628,6 @@ paths:
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.department_controller"
-    delete:
-      tags:
-      - "department"
-      summary: "Deletes a department"
-      operationId: "delete_department"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "department_short_code"
-        in: "path"
-        description: "Department short code to delete"
-        required: true
-        type: "string"
-        maxLength: 5
-        minLength: 2
-      responses:
-        400:
-          description: "Invalid short code supplied"
-        404:
-          description: "Department not found"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.department_controller"
-  /prereq/class:
-    post:
-      tags:
-      - "prereq"
-      summary: "Add a prereq to the classdeck"
-      operationId: "add_prereq_class"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Prereq object that needs to be added to the system"
-        required: true
-        schema:
-          $ref: "#/definitions/Prereq"
-      responses:
-        405:
-          description: "Invalid input"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.prereq_controller"
-    put:
-      tags:
-      - "prereq"
-      summary: "Update an existing prereq"
-      operationId: "update_prereq_class"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Prereq object that needs to be updated in the system"
-        required: true
-        schema:
-          $ref: "#/definitions/Prereq"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Prereq not found"
-        405:
-          description: "Validation exception"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.prereq_controller"
-  /prereq/class/{prereq_group_id}/{class_dept}/{class_number}:
-    get:
-      tags:
-      - "prereq"
-      summary: "Find prereq by ID"
-      description: "Returns a single prereq"
-      operationId: "get_prereq_class_by_id"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "prereq_group_id"
-        in: "path"
-        description: "ID of prereq group related to the prereq to return"
-        required: true
-        type: "integer"
-        minimum: 0
-      - name: "class_dept"
-        in: "path"
-        description: "short code of the department of the class related to the prereq\
-          \ to return"
-        required: true
-        type: "string"
-        maxLength: 5
-        minLength: 2
-      - name: "class_number"
-        in: "path"
-        description: "number of the class related to the prereq to return"
-        required: true
-        type: "integer"
-        maximum: 9999
-        minimum: 0
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Prereq"
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Prereq not found"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.prereq_controller"
-    delete:
-      tags:
-      - "prereq"
-      summary: "Deletes a prereq"
-      operationId: "delete_prereq_class"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "prereq_group_id"
-        in: "path"
-        description: "ID of prereq group related to the prereq to return"
-        required: true
-        type: "integer"
-        minimum: 0
-      - name: "class_dept"
-        in: "path"
-        description: "short code of the department of the class related to the prereq\
-          \ to return"
-        required: true
-        type: "string"
-        maxLength: 5
-        minLength: 2
-      - name: "class_number"
-        in: "path"
-        description: "number of the class related to the prereq to return"
-        required: true
-        type: "integer"
-        maximum: 9999
-        minimum: 0
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Prereq not found"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.prereq_controller"
-  /prereq/degree:
-    post:
-      tags:
-      - "prereq"
-      summary: "Add a prereq to the classdeck"
-      operationId: "add_prereq_degree"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Prereq object that needs to be added to the system"
-        required: true
-        schema:
-          $ref: "#/definitions/Prereq"
-      responses:
-        405:
-          description: "Invalid input"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.prereq_controller"
-    put:
-      tags:
-      - "prereq"
-      summary: "Update an existing prereq"
-      operationId: "update_prereq_degree"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Prereq object that needs to be updated in the system"
-        required: true
-        schema:
-          $ref: "#/definitions/Prereq"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Prereq not found"
-        405:
-          description: "Validation exception"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.prereq_controller"
-  /prereq/degree/{prereq_group_id}/{class_dept}/{class_number}:
-    get:
-      tags:
-      - "prereq"
-      summary: "Find prereq by ID"
-      description: "Returns a single prereq"
-      operationId: "get_prereq_degree_by_id"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "prereq_group_id"
-        in: "path"
-        description: "ID of prereq group related to the prereq to return"
-        required: true
-        type: "integer"
-        minimum: 0
-      - name: "class_dept"
-        in: "path"
-        description: "short code of the department of the class related to the prereq\
-          \ to return"
-        required: true
-        type: "string"
-        maxLength: 5
-        minLength: 2
-      - name: "class_number"
-        in: "path"
-        description: "number of the class related to the prereq to return"
-        required: true
-        type: "integer"
-        maximum: 9999
-        minimum: 0
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Prereq"
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Prereq not found"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.prereq_controller"
-    delete:
-      tags:
-      - "prereq"
-      summary: "Deletes a prereq"
-      operationId: "delete_prereq_degree"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "prereq_group_id"
-        in: "path"
-        description: "ID of prereq group related to the prereq to return"
-        required: true
-        type: "integer"
-        minimum: 0
-      - name: "class_dept"
-        in: "path"
-        description: "short code of the department of the class related to the prereq\
-          \ to return"
-        required: true
-        type: "string"
-        maxLength: 5
-        minLength: 2
-      - name: "class_number"
-        in: "path"
-        description: "number of the class related to the prereq to return"
-        required: true
-        type: "integer"
-        maximum: 9999
-        minimum: 0
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Prereq not found"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.prereq_controller"
   /pursued_degree:
     post:
       tags:
@@ -1184,39 +651,13 @@ paths:
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.pursued_degree_controller"
-    put:
-      tags:
-      - "pursued_degree"
-      summary: "Update an existing pursued_degree"
-      operationId: "update_pursued_degree"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "PursuedDegree object that needs to be updated in the system"
-        required: true
-        schema:
-          $ref: "#/definitions/PursuedDegree"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "PursuedDegree not found"
-        405:
-          description: "Validation exception"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.pursued_degree_controller"
-  /pursued_degree/{nuid}/{degree_id}:
+  /pursued_degree/{nuid}:
     get:
       tags:
       - "pursued_degree"
-      summary: "Find pursued_degree by ID"
-      description: "Returns a single pursued_degree"
-      operationId: "get_pursued_degree_by_id"
+      summary: "List pursued_degree by NUID"
+      description: "Returns the pursued_degrees related to the given NUID"
+      operationId: "get_pursued_degree_by_nuid"
       produces:
       - "application/json"
       parameters:
@@ -1226,17 +667,9 @@ paths:
         required: true
         type: "integer"
         minimum: 0
-      - name: "degree_id"
-        in: "path"
-        description: "nuid of the degree related to the pursued_degree to return"
-        required: true
-        type: "integer"
-        minimum: 0
       responses:
         200:
           description: "successful operation"
-          schema:
-            $ref: "#/definitions/PursuedDegree"
         400:
           description: "Invalid ID supplied"
         404:
@@ -1244,6 +677,7 @@ paths:
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.pursued_degree_controller"
+  /pursued_degree/{nuid}/{degree_id}:
     delete:
       tags:
       - "pursued_degree"
@@ -1272,6 +706,32 @@ paths:
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.pursued_degree_controller"
+  /schedule_option/list_by_student/{nuid}:
+    get:
+      tags:
+      - "schedule_option"
+      summary: "List schedule_option by NUID"
+      description: "Returns the schedule_options related to the given NUID"
+      operationId: "get_schedule_option_by_nuid"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "nuid"
+        in: "path"
+        description: "nuid of the user related to the schedule_option to return"
+        required: true
+        type: "integer"
+        minimum: 0
+      responses:
+        200:
+          description: "successful operation"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "PursuedDegree not found"
+      security:
+      - internal_auth: []
+      x-swagger-router-controller: "swagger_server.controllers.schedule_option_controller"
   /schedule_option:
     post:
       tags:
@@ -1490,6 +950,21 @@ paths:
       - classdeck_auth: []
       x-swagger-router-controller: "swagger_server.controllers.schedule_option_section_controller"
   /section:
+    get:
+      tags:
+      - "section"
+      summary: "Lists all sections"
+      operationId: "list_sections"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Successful operation"
+      security:
+      - internal_auth: []
+      x-swagger-router-controller: "swagger_server.controllers.section_controller"
+  /section/filtered:
     post:
       tags:
       - "section"
@@ -1499,42 +974,10 @@ paths:
       - "application/json"
       produces:
       - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Section object that needs to be added to the system"
-        required: true
-        schema:
-          $ref: "#/definitions/Section"
+      parameters: []
       responses:
         405:
           description: "Invalid input"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.section_controller"
-    put:
-      tags:
-      - "section"
-      summary: "Update an existing section"
-      operationId: "update_section"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Section object that needs to be updated in the system"
-        required: true
-        schema:
-          $ref: "#/definitions/Section"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Section not found"
-        405:
-          description: "Validation exception"
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.section_controller"
@@ -1567,293 +1010,6 @@ paths:
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.section_controller"
-    delete:
-      tags:
-      - "section"
-      summary: "Deletes a section"
-      operationId: "delete_section"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "crn"
-        in: "path"
-        description: "Section CRN to delete"
-        required: true
-        type: "integer"
-        maximum: 99999
-        minimum: 0
-      responses:
-        400:
-          description: "Invalid CRN supplied"
-        404:
-          description: "Section not found"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.section_controller"
-  /section_meeting_time:
-    post:
-      tags:
-      - "section_meeting_time"
-      summary: "Add a section_meeting_time to the classdeck"
-      operationId: "add_section_meeting_time"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "SectionMeetingTime object that needs to be added to the system"
-        required: true
-        schema:
-          $ref: "#/definitions/SectionMeetingTime"
-      responses:
-        405:
-          description: "Invalid input"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.section_meeting_time_controller"
-    put:
-      tags:
-      - "section_meeting_time"
-      summary: "Update an existing section_meeting_time"
-      operationId: "update_section_meeting_time"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "SectionMeetingTime object that needs to be updated in the system"
-        required: true
-        schema:
-          $ref: "#/definitions/SectionMeetingTime"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "SectionMeetingTime not found"
-        405:
-          description: "Validation exception"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.section_meeting_time_controller"
-  /section_meeting_time/{crn}/{start_time}/{end_time}/{meeting_days}:
-    get:
-      tags:
-      - "section_meeting_time"
-      summary: "Find section_meeting_time by ID"
-      description: "Returns a single section_meeting_time"
-      operationId: "get_section_meeting_time_by_id"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "crn"
-        in: "path"
-        description: "crn of related section of the sectionMettingTime to return"
-        required: true
-        type: "integer"
-        maximum: 99999
-        minimum: 0
-      - name: "start_time"
-        in: "path"
-        description: "start_time of the sectionMettingTime to return"
-        required: true
-        type: "string"
-        pattern: "^[012]{1}[\\d]{1}[:]{1}[012345]{1}[\\d]{1}$"
-        x-regex: "^[012]{1}[\\\\d]{1}[:]{1}[012345]{1}[\\\\d]{1}$"
-        x-modifiers: []
-      - name: "end_time"
-        in: "path"
-        description: "end_time of the sectionMettingTime to return"
-        required: true
-        type: "string"
-        pattern: "^[012]{1}[\\d]{1}[:]{1}[012345]{1}[\\d]{1}$"
-        x-regex: "^[012]{1}[\\\\d]{1}[:]{1}[012345]{1}[\\\\d]{1}$"
-        x-modifiers: []
-      - name: "meeting_days"
-        in: "path"
-        description: "meeting_days of the sectionMettingTime to return"
-        required: true
-        type: "string"
-        pattern: "^[01]{7}$"
-        x-regex: "^[01]{7}$"
-        x-modifiers: []
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/SectionMeetingTime"
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "SectionMeetingTime not found"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.section_meeting_time_controller"
-    delete:
-      tags:
-      - "section_meeting_time"
-      summary: "Deletes a section_meeting_time"
-      operationId: "delete_section_meeting_time"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "crn"
-        in: "path"
-        description: "crn of related section of the sectionMettingTime to return"
-        required: true
-        type: "integer"
-        maximum: 99999
-        minimum: 0
-      - name: "start_time"
-        in: "path"
-        description: "start_time of the sectionMettingTime to return"
-        required: true
-        type: "string"
-        pattern: "^[012]{1}[\\d]{1}[:]{1}[012345]{1}[\\d]{1}$"
-        x-regex: "^[012]{1}[\\\\d]{1}[:]{1}[012345]{1}[\\\\d]{1}$"
-        x-modifiers: []
-      - name: "end_time"
-        in: "path"
-        description: "end_time of the sectionMettingTime to return"
-        required: true
-        type: "string"
-        pattern: "^[012]{1}[\\d]{1}[:]{1}[012345]{1}[\\d]{1}$"
-        x-regex: "^[012]{1}[\\\\d]{1}[:]{1}[012345]{1}[\\\\d]{1}$"
-        x-modifiers: []
-      - name: "meeting_days"
-        in: "path"
-        description: "meeting_days of the sectionMettingTime to return"
-        required: true
-        type: "string"
-        pattern: "^[01]{7}$"
-        x-regex: "^[01]{7}$"
-        x-modifiers: []
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "SectionMeetingTime not found"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.section_meeting_time_controller"
-  /section_restriction:
-    post:
-      tags:
-      - "section_restriction"
-      summary: "Add a section_restriction to the classdeck"
-      operationId: "add_section_restriction"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "SectionRestriction object that needs to be added to the system"
-        required: true
-        schema:
-          $ref: "#/definitions/SectionRestriction"
-      responses:
-        405:
-          description: "Invalid input"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.section_restriction_controller"
-    put:
-      tags:
-      - "section_restriction"
-      summary: "Update an existing section_restriction"
-      operationId: "update_section_restriction"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "SectionRestriction object that needs to be updated in the system"
-        required: true
-        schema:
-          $ref: "#/definitions/SectionRestriction"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "SectionRestriction not found"
-        405:
-          description: "Validation exception"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.section_restriction_controller"
-  /section_restriction/{type}/{crn}:
-    get:
-      tags:
-      - "section_restriction"
-      summary: "Find section_restriction by ID"
-      description: "Returns a single section_restriction"
-      operationId: "get_section_restriction_by_id"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "type"
-        in: "path"
-        description: "type of the section_restriction to return"
-        required: true
-        type: "string"
-        maxLength: 255
-        minLength: 1
-      - name: "crn"
-        in: "path"
-        description: "crn of the section_restriction to return"
-        required: true
-        type: "integer"
-        maximum: 99999
-        minimum: 0
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/SectionRestriction"
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "SectionRestriction not found"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.section_restriction_controller"
-    delete:
-      tags:
-      - "section_restriction"
-      summary: "Deletes a section_restriction"
-      operationId: "delete_section_restriction"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "type"
-        in: "path"
-        description: "type of the section_restriction to return"
-        required: true
-        type: "string"
-        maxLength: 255
-        minLength: 1
-      - name: "crn"
-        in: "path"
-        description: "crn of the section_restriction to return"
-        required: true
-        type: "integer"
-        maximum: 99999
-        minimum: 0
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "SectionRestriction not found"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.section_restriction_controller"
   /semester:
     post:
       tags:
@@ -2259,8 +1415,8 @@ paths:
       x-swagger-router-controller: "swagger_server.controllers.student_taken_classes_controller"
 securityDefinitions:
   classdeck_auth:
-    type: basic
-    x-basicInfoFunc: app.basic_auth
+    type: "basic"
+    x-basicInfoFunc: "app.basic_auth"
   internal_auth:
     type: "apiKey"
     name: "internal_auth"

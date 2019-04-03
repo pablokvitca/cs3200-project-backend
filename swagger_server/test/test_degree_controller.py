@@ -26,6 +26,17 @@ class TestDegreeController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+    def test_degree_list_prereqs(self):
+        """Test case for degree_list_prereqs
+
+        List the prereqs for a given degree
+        """
+        response = self.client.open(
+            '/pablokvitca/classdeck-api/1.0.0/degree/list_prereqsites/{degree_id}'.format(degree_id=1),
+            method='GET')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
     def test_delete_degree(self):
         """Test case for delete_degree
 
@@ -44,6 +55,28 @@ class TestDegreeController(BaseTestCase):
         """
         response = self.client.open(
             '/pablokvitca/classdeck-api/1.0.0/degree/{degree_id}'.format(degree_id=1),
+            method='GET')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_list_degrees(self):
+        """Test case for list_degrees
+
+        List all degrees
+        """
+        response = self.client.open(
+            '/pablokvitca/classdeck-api/1.0.0/degree',
+            method='GET')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_list_degrees_by_college(self):
+        """Test case for list_degrees_by_college
+
+        List all degrees in the given college
+        """
+        response = self.client.open(
+            '/pablokvitca/classdeck-api/1.0.0/degree/by_college/{college_id}'.format(college_id=1),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))

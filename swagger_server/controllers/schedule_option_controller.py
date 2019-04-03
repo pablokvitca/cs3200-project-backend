@@ -46,6 +46,19 @@ def get_schedule_option_by_id(schedule_option_id):  # noqa: E501
     return 'do some magic!'
 
 
+def get_schedule_option_by_nuid(nuid):  # noqa: E501
+    """List schedule_option by NUID
+
+    Returns the schedule_options related to the given NUID # noqa: E501
+
+    :param nuid: nuid of the user related to the schedule_option to return
+    :type nuid: int
+
+    :rtype: None
+    """
+    return 'do some magic!'
+
+
 def update_schedule_option(body):  # noqa: E501
     """Update an existing schedule_option
 
