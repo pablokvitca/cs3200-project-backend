@@ -18,9 +18,9 @@ import time
 
 settings = {
     # The name of the MySQL account to use (or empty for anonymous)
-    'userName': "root",
+    'userName': "cs3200",
     # The password for the MySQL account (or empty for anonymous)
-    'password': "rycbar12345",
+    'password': "",
     'serverName': "127.0.0.1",    # The name of the computer running MySQL
     # The port of the MySQL server (default is 3306)
     'portNumber': 3306,
