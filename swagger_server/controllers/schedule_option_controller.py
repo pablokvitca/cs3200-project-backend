@@ -79,6 +79,7 @@ def get_schedule_option_by_nuid(nuid):  # noqa: E501
         session_cookie = connexion.request.cookies.get("session")
         session_NUID = connexion.JWT_verify(session_cookie)
         if session_NUID == str(nuid).zfill(9):
+            print(connexion.DB.default_isolation_level)
             result = connexion.DB.execute(select_string)
             res = []
             opt = {
