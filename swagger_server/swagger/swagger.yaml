@@ -955,17 +955,23 @@ paths:
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.section_controller"
-  /section/filtered:
-    post:
+  /section/filtered/{sch_opt_id}:
+    get:
       tags:
       - "section"
-      summary: "Add a section to the classdeck"
-      operationId: "add_section"
+      summary: "Returns a filtered list of sections"
+      operationId: "list_sections_filtered"
       consumes:
       - "application/json"
       produces:
       - "application/json"
-      parameters: []
+      parameters:
+      - name: "sch_opt_id"
+        in: "path"
+        description: "sch_opt_id of the schedule_option to filter by"
+        required: true
+        type: "integer"
+        minimum: 0
       responses:
         405:
           description: "Invalid input"
@@ -1002,125 +1008,17 @@ paths:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.section_controller"
   /semester:
-    post:
-      tags:
-      - "semester"
-      summary: "Add a semester to the classdeck"
-      operationId: "add_semester"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Semester object that needs to be added to the system"
-        required: true
-        schema:
-          $ref: "#/definitions/Semester"
-      responses:
-        405:
-          description: "Invalid input"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.semester_controller"
-    put:
-      tags:
-      - "semester"
-      summary: "Update an existing semester"
-      operationId: "update_semester"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Semester object that needs to be updated in the system"
-        required: true
-        schema:
-          $ref: "#/definitions/Semester"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Semester not found"
-        405:
-          description: "Validation exception"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.semester_controller"
-  /semester/{semester}/{year}:
     get:
       tags:
       - "semester"
-      summary: "Find semester by ID"
-      description: "Returns a single semester"
-      operationId: "get_semester_by_id"
+      summary: "Lists all semesters"
+      description: "Lists all semesters"
+      operationId: "list_semesters"
       produces:
       - "application/json"
-      parameters:
-      - name: "semester"
-        in: "path"
-        description: "semester to return"
-        required: true
-        type: "string"
-        enum:
-        - "fall"
-        - "spring"
-        - "summer 1"
-        - "summer 2"
-        - "full summer"
-      - name: "year"
-        in: "path"
-        description: "year to return"
-        required: true
-        type: "integer"
-        maximum: 3000
-        minimum: 2000
       responses:
         200:
           description: "successful operation"
-          schema:
-            $ref: "#/definitions/Semester"
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Semester not found"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.semester_controller"
-    delete:
-      tags:
-      - "semester"
-      summary: "Deletes a semester"
-      operationId: "delete_semester"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "semester"
-        in: "path"
-        description: "semester to return"
-        required: true
-        type: "string"
-        enum:
-        - "fall"
-        - "spring"
-        - "summer 1"
-        - "summer 2"
-        - "full summer"
-      - name: "year"
-        in: "path"
-        description: "year to return"
-        required: true
-        type: "integer"
-        maximum: 3000
-        minimum: 2000
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Semester not found"
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.semester_controller"

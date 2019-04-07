@@ -33,6 +33,7 @@ def main():
     app.app.json_encoder = encoder.JSONEncoder
     app.add_api('swagger.yaml', arguments={'title': 'ClassDeck Project'})
     connexion.DB = connect_db()
+    connexion.DB_ENG = get_db()
     connexion.JWT_verify = verify_JWT
     connexion.JWT_generate_token = generate_token
     cors = CORS(app.app, supports_credentials=True)
@@ -43,7 +44,7 @@ def verify_JWT(cookie):
     """If the user is log in is valid, then returns the user id
     else, returns False
     """
-    if (cookie == 'logged_out'):
+    if cookie == 'logged_out':
         return False
     try:
         decoded = decode_token(cookie)
@@ -78,9 +79,9 @@ def get_db():
     """Opens a new database connection if there is none yet for the
     current application context.
     """
-    if not hasattr(g, 'db_conn'):
-        g.db_conn = connect_db()
-    return g.db_conn
+    db_engine = create_engine(
+        'mysql+pymysql://{0[userName]}:{0[password]}@{0[serverName]}:{0[portNumber]}/{0[dbName]}'.format(settings))
+    return db_engine
 
 
 def close_db(error):
@@ -91,9 +92,7 @@ def close_db(error):
 
 def connect_db():
     print('Trying to connect to database')
-    db_engine = create_engine(
-        'mysql+pymysql://{0[userName]}:{0[password]}@{0[serverName]}:{0[portNumber]}/{0[dbName]}'.format(settings))
-    db_conn = db_engine.connect()
+    db_conn = get_db().connect()
     print('Connected to database')
     return db_conn
 
