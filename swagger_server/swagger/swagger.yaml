@@ -1144,6 +1144,20 @@ paths:
         default:
           description: "successful operation"
       x-swagger-router-controller: "swagger_server.controllers.student_controller"
+  /student/loggedin:
+    get:
+      tags:
+        - "student"
+      summary: "Returns the currently logged in student"
+      operationId: "logged_in_student_data"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "successful operation."
+        400:
+          description: "User not logged in."
+      x-swagger-router-controller: "swagger_server.controllers.student_controller"
   /student/login:
     get:
       tags:

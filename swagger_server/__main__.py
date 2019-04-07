@@ -1,20 +1,14 @@
 #!/usr/bin/env python3
-
 import connexion
-
 from swagger_server import encoder
-
 import sqlalchemy
 from sqlalchemy import create_engine
-
 import json
-
 import six
 from werkzeug.exceptions import Unauthorized
-
 from jose import JWTError, jwt
-
 import time
+from flask_cors import CORS
 
 settings = {
     # The name of the MySQL account to use (or empty for anonymous)
@@ -41,6 +35,7 @@ def main():
     connexion.DB = connect_db()
     connexion.JWT_verify = verify_JWT
     connexion.JWT_generate_token = generate_token
+    cors = CORS(app.app, supports_credentials=True)
     app.run(port=8080)
 
 

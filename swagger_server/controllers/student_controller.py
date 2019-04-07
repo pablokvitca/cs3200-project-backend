@@ -11,6 +11,25 @@ from sqlalchemy import exc
 
 from flask import make_response
 
+def logged_in_student_data():
+    try:
+        session_cookie = connexion.request.cookies.get("session")
+        session_NUID = connexion.JWT_verify(session_cookie)
+        select_string = "SELECT * FROM student WHERE nuid = {}".format(session_NUID)
+        result = connexion.DB.execute(select_string)
+        res = []
+        for r in result.fetchall():
+            res.append({
+                "nuid": r["nuid"],
+                "email": r["email"],
+                "name": r["name"]
+            })
+        if len(r) > 0:
+            return res, 200
+        else:
+            return "User not logged in.", 400
+    except:
+        return "INTERNAL SERVER ERROR", 500
 
 def create_student(body):  # noqa: E501
     """Create student
@@ -127,7 +146,7 @@ def login_student(nuid, password):  # noqa: E501
     result_user = connexion.DB.execute(select_string)
 
     for row in result_user:
-        resp = make_response("Student logged in", 200)
+        resp = make_response("Student is now logged in", 200)
         session = connexion.JWT_generate_token(nuid)
         resp.set_cookie("session", session)
         return resp

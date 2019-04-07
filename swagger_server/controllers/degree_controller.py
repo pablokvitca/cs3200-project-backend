@@ -33,7 +33,7 @@ def degree_list_prereqs(degree_id):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+    return "do some magic!"
 
 
 def delete_degree(degree_id):  # noqa: E501
@@ -88,19 +88,14 @@ def list_degrees():  # noqa: E501
     """
 
     select_string = """
-            SELECT * FROM degree
+            SELECT * FROM degree;
             """
     try:
         result = connexion.DB.execute(select_string)
         res = []
-        for row in result:
-            r = Degree.from_dict(row)
-            res.append({
-                'name': row["name"],
-                'degree_ID': row["degree_ID"],
-                'degree_type': row["degree_type"],
-                'college_ID': row["college_ID"]
-            })
+        for name, degree_id, degree_type, college_id in result.fetchall():
+            r = Degree(degree_id, name, college_id, degree_type)
+            res.append(r)
         return res, 200
     except exc.IntegrityError:
         return "Internal Server Error", 500

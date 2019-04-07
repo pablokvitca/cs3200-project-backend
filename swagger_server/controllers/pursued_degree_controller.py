@@ -33,7 +33,7 @@ def add_pursued_degree(body):  # noqa: E501
         try:
             session_cookie = connexion.request.cookies.get("session")
             session_NUID = connexion.JWT_verify(session_cookie)
-            if (session_NUID == str(body.nuid)):
+            if session_NUID == str(body.nuid).zfill(9):
                 connexion.DB.execute(insert_string)
                 return "Accepted", 201
             else:
@@ -45,7 +45,7 @@ def add_pursued_degree(body):  # noqa: E501
     return "Bad Request", 400
 
 
-def delete_pursued_degree(nuid, degree_id):  # noqa: E501
+def delete_pursued_degree(nuid, degree_id, tries:int=0):  # noqa: E501
     """Deletes a pursued_degree
 
      # noqa: E501
@@ -57,28 +57,29 @@ def delete_pursued_degree(nuid, degree_id):  # noqa: E501
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        body = PursuedDegree.from_dict(connexion.request.get_json())  # noqa: E501
-        delete_string = """
-            DELETE FROM pursued_degree
-            WHERE
-                NUID = {0},
-                AND
-                degree_id = {1};
-            """.format(body.nuid, body.degree_id)
-        try:
-            session_cookie = connexion.request.cookies.get("session")
-            session_NUID = connexion.JWT_verify(session_cookie)
-            if (session_NUID == body.nuid):
-                connexion.DB.execute(delete_string)
-                return "Accepted", 201
-            else:
-                return "Forbidden", 403
-        except exc.IntegrityError:
-            return "Could not add pursued degree", 406
-        except KeyError:
+    def retry():
+        if tries < 5:
+            delete_pursued_degree(nuid, degree_id, tries + 1)
+
+    delete_string = "DELETE FROM pursued_degree WHERE nuid = {0} AND degree_id = {1};".format(nuid, degree_id)
+    try:
+        session_cookie = connexion.request.cookies.get("session")
+        session_NUID = connexion.JWT_verify(session_cookie)
+        if session_NUID == str(nuid).zfill(9):
+            connexion.DB.execute(delete_string)
+            return "Accepted", 201
+        else:
             return "Forbidden", 403
-    return "Bad Request", 400
+    except exc.IntegrityError:
+        return "Could not add pursued degree", 406
+    except exc.InterfaceError:
+        retry()
+    except exc.OperationalError:
+        retry()
+    except exc.InternalError:
+        retry()
+    except KeyError:
+        return "Forbidden", 403
 
 
 def get_pursued_degree_by_nuid(nuid):  # noqa: E501
@@ -91,4 +92,24 @@ def get_pursued_degree_by_nuid(nuid):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+    select_string = """
+        SELECT * FROM pursued_degree
+        WHERE
+            nuid = {};
+        """.format(nuid)
+    try:
+        session_cookie = connexion.request.cookies.get("session")
+        session_NUID = connexion.JWT_verify(session_cookie)
+        if session_NUID == str(nuid).zfill(9):
+            result = connexion.DB.execute(select_string)
+            res = []
+            for nuid, degree_id in result.fetchall():
+                r = PursuedDegree(nuid, degree_id)
+                res.append(r)
+            return res, 201
+        else:
+            return "Forbidden", 403
+    except exc.IntegrityError as err:
+        return "Could not add pursued degree", 406
+    except KeyError:
+        return "Forbidden", 403
