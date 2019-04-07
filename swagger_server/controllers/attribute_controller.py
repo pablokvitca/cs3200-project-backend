@@ -125,4 +125,18 @@ def list_attributes():  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+    select_string = """
+                SELECT * FROM attributes
+                """
+    try:
+        result = connexion.DB.execute(select_string)
+        res = []
+        for row in result:
+            r = Attribute.from_dict(row)
+            res.append({
+                'name': row["name"],
+                'nupath': row["nupath"]
+            })
+        return res, 200
+    except exc.IntegrityError:
+        return "Internal Server Error", 500

@@ -4,6 +4,8 @@ import six
 from swagger_server.models.degree import Degree  # noqa: E501
 from swagger_server import util
 
+from sqlalchemy import types
+from sqlalchemy import exc
 
 def add_degree(body):  # noqa: E501
     """Add a degree to the classdeck
@@ -56,7 +58,23 @@ def get_degree_by_id(degree_id):  # noqa: E501
 
     :rtype: Degree
     """
-    return 'do some magic!'
+    select_string = """
+                    SELECT * FROM degree
+                    WHERE degree_ID = "{}"
+                    """.format(degree_id)
+    try:
+        result = connexion.DB.execute(select_string)
+        for row in result:
+            res = {
+                'name': row["name"],
+                'degree_ID': row["degree_ID"],
+                'degree_type': row["degree_type"],
+                'college_ID': row["college_ID"]
+            }
+            return res, 200
+        return "Object not found", 404
+    except exc.IntegrityError:
+        return "Internal Server Error", 500
 
 
 def list_degrees():  # noqa: E501
@@ -67,7 +85,24 @@ def list_degrees():  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+
+    select_string = """
+            SELECT * FROM degree
+            """
+    try:
+        result = connexion.DB.execute(select_string)
+        res = []
+        for row in result:
+            r = Degree.from_dict(row)
+            res.append({
+                'name': row["name"],
+                'degree_ID': row["degree_ID"],
+                'degree_type': row["degree_type"],
+                'college_ID': row["college_ID"]
+            })
+        return res, 200
+    except exc.IntegrityError:
+        return "Internal Server Error", 500
 
 
 def list_degrees_by_college(college_id):  # noqa: E501
@@ -80,7 +115,23 @@ def list_degrees_by_college(college_id):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+    select_string = """
+                        SELECT * FROM degree
+                        WHERE college_ID = "{}"
+                        """.format(college_id)
+    try:
+        result = connexion.DB.execute(select_string)
+        for row in result:
+            res = {
+                'name': row["name"],
+                'degree_ID': row["degree_ID"],
+                'degree_type': row["degree_type"],
+                'college_ID': row["college_ID"]
+            }
+            return res, 200
+        return "Object not found", 404
+    except exc.IntegrityError:
+        return "Internal Server Error", 500
 
 
 def update_degree(body):  # noqa: E501
