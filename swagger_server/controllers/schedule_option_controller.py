@@ -17,11 +17,28 @@ def add_schedule_option(body):  # noqa: E501
     :rtype: None
     """
     if connexion.request.is_json:
-        body = ScheduleOption.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        json = connexion.request.get_json()
+        body = ScheduleOption.from_dict(json)  # noqa: E501
+        insert_string = """
+                    INSERT INTO schedule_option (nuid, title, semester_id)
+                    VALUES ({0}, '{1}', {2});
+                    """.format(json["nuid"], json["title"], json["semester"])
+        try:
+            session_cookie = connexion.request.cookies.get("session")
+            session_NUID = connexion.JWT_verify(session_cookie)
+            if session_NUID == str(body.nuid).zfill(9):
+                result = connexion.DB.execute(insert_string)
+                return ["Accepted", result.lastrowid], 201
+            else:
+                return "Forbidden", 403
+        except exc.IntegrityError as err:
+            return "Could not add pursued degree", 406
+        except KeyError:
+            return "Forbidden", 403
+    return "Bad Request", 400
 
 
-def delete_schedule_option(schedule_option_id):  # noqa: E501
+def delete_schedule_option(schedule_option_id, tries=0):  # noqa: E501
     """Deletes a schedule_option
 
      # noqa: E501
@@ -31,20 +48,29 @@ def delete_schedule_option(schedule_option_id):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
 
+    def retry():
+        if tries < 5:
+            return delete_schedule_option(schedule_option_id, tries + 1)
+        else:
+            return "I'm Done", 420
 
-def get_schedule_option_by_id(schedule_option_id):  # noqa: E501
-    """Find schedule_option by ID
-
-    Returns a single schedule_option # noqa: E501
-
-    :param schedule_option_id: ID of schedule_option to return
-    :type schedule_option_id: int
-
-    :rtype: ScheduleOption
-    """
-    return 'do some magic!'
+    delete_string = "DELETE FROM schedule_option WHERE schedule_option_id = {0};".format(schedule_option_id)
+    try:
+        session_cookie = connexion.request.cookies.get("session")
+        session_NUID = connexion.JWT_verify(session_cookie)
+        connexion.DB.execute(delete_string)
+        return "Accepted", 201
+    except exc.IntegrityError:
+        return "Could not add pursued degree", 406
+    except exc.InterfaceError:
+        retry()
+    except exc.OperationalError:
+        retry()
+    except exc.InternalError:
+        retry()
+    except KeyError:
+        return "Forbidden", 403
 
 
 def get_schedule_option_by_nuid(nuid):  # noqa: E501
@@ -124,18 +150,3 @@ def get_schedule_option_by_nuid(nuid):  # noqa: E501
         return "Could not add pursued degree", 406
     except KeyError:
         return "Forbidden", 403
-
-
-def update_schedule_option(body):  # noqa: E501
-    """Update an existing schedule_option
-
-     # noqa: E501
-
-    :param body: ScheduleOption object that needs to be updated in the system
-    :type body: dict | bytes
-
-    :rtype: None
-    """
-    if connexion.request.is_json:
-        body = ScheduleOption.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'

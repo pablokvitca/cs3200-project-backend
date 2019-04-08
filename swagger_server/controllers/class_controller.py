@@ -41,7 +41,7 @@ def get_class_by_id(class_department, class_number):  # noqa: E501
         return "Internal Server Error", 500
 
 
-def list_classes():  # noqa: E501
+def list_classes(tries=0):  # noqa: E501
     """List all classes
 
     Returns all classes # noqa: E501
@@ -49,6 +49,12 @@ def list_classes():  # noqa: E501
 
     :rtype: None
     """
+    def retry():
+        if tries < 5:
+            return list_classes(tries + 1)
+        else:
+            return "INTERNAL SERVER ERROR", 500
+
     select_string = """
             SELECT * FROM class
             """
@@ -68,6 +74,8 @@ def list_classes():  # noqa: E501
         return res, 200
     except exc.IntegrityError:
         return "Internal Server Error", 500
+    except:
+        return retry()
 
 
 def list_classes_filtered():  # noqa: E501

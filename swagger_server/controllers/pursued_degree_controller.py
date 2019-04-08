@@ -59,7 +59,9 @@ def delete_pursued_degree(nuid, degree_id, tries:int=0):  # noqa: E501
     """
     def retry():
         if tries < 5:
-            delete_pursued_degree(nuid, degree_id, tries + 1)
+            return delete_pursued_degree(nuid, degree_id, tries + 1)
+        else:
+            return "I'm Done", 420
 
     delete_string = "DELETE FROM pursued_degree WHERE nuid = {0} AND degree_id = {1};".format(nuid, degree_id)
     try:
@@ -82,7 +84,7 @@ def delete_pursued_degree(nuid, degree_id, tries:int=0):  # noqa: E501
         return "Forbidden", 403
 
 
-def get_pursued_degree_by_nuid(nuid):  # noqa: E501
+def get_pursued_degree_by_nuid(nuid, tries=0):  # noqa: E501
     """List pursued_degree by NUID
 
     Returns the pursued_degrees related to the given NUID # noqa: E501
@@ -92,6 +94,11 @@ def get_pursued_degree_by_nuid(nuid):  # noqa: E501
 
     :rtype: None
     """
+    def retry():
+        if tries < 5:
+            return get_pursued_degree_by_nuid(nuid, tries + 1)
+        else:
+            return "INTERNAL SERVER ERROR", 500
     select_string = """
         SELECT * FROM pursued_degree
         WHERE
@@ -113,3 +120,5 @@ def get_pursued_degree_by_nuid(nuid):  # noqa: E501
         return "Could not add pursued degree", 406
     except KeyError:
         return "Forbidden", 403
+    except:
+        return retry()

@@ -37,7 +37,7 @@ def delete_student_taken_classes(nuid, class_dept, class_number):  # noqa: E501
     return 'do some magic!'
 
 
-def get_student_taken_classes_by_nuid(nuid):  # noqa: E501
+def get_student_taken_classes_by_nuid(nuid, tries=0):  # noqa: E501
     """Find student_taken_classes by ID
 
     Returns a single student_taken_classes # noqa: E501
@@ -51,8 +51,14 @@ def get_student_taken_classes_by_nuid(nuid):  # noqa: E501
 
     :rtype: StudentTakenClasses
     """
+    def retry():
+        if tries < 5:
+            return get_student_taken_classes_by_nuid(nuid, tries + 1)
+        else:
+            return "INTERNAL SERVER ERROR", 500
     select_string = """
-            SELECT * FROM classes_taken
+            SELECT nuid, class_dept, class_number, transferred, current 
+            FROM classes_taken
             WHERE
                 nuid = {};
             """.format(nuid)
@@ -62,16 +68,18 @@ def get_student_taken_classes_by_nuid(nuid):  # noqa: E501
         if session_NUID == str(nuid).zfill(9):
             result = connexion.DB.execute(select_string)
             res = []
-            for nuid, class_dept, class_number in result.fetchall():
-                r = StudentTakenClasses(nuid, degree_id)
+            for nuid, class_dept, class_number, transferred, current in result.fetchall():
+                r = StudentTakenClasses(nuid, class_dept, class_number, transferred, current)
                 res.append(r)
             return res, 201
         else:
             return "Forbidden", 403
-    except exc.IntegrityError as err:
-        return "Could not add pursued degree", 406
     except KeyError:
         return "Forbidden", 403
+    except AttributeError:
+        return "Forbidden", 403
+    except:
+        return retry()
 
 
 def update_student_taken_classes(body):  # noqa: E501

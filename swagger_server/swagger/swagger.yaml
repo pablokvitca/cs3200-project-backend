@@ -736,70 +736,16 @@ paths:
       parameters:
       - in: "body"
         name: "body"
-        description: "ScheduleOption object that needs to be added to the system"
         required: true
         schema:
-          $ref: "#/definitions/ScheduleOption"
+          type: object
       responses:
         405:
           description: "Invalid input"
       security:
       - classdeck_auth: []
       x-swagger-router-controller: "swagger_server.controllers.schedule_option_controller"
-    put:
-      tags:
-      - "schedule_option"
-      summary: "Update an existing schedule_option"
-      operationId: "update_schedule_option"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "ScheduleOption object that needs to be updated in the system"
-        required: true
-        schema:
-          $ref: "#/definitions/ScheduleOption"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "ScheduleOption not found"
-        405:
-          description: "Validation exception"
-      security:
-      - classdeck_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.schedule_option_controller"
   /schedule_option/{schedule_option_id}:
-    get:
-      tags:
-      - "schedule_option"
-      summary: "Find schedule_option by ID"
-      description: "Returns a single schedule_option"
-      operationId: "get_schedule_option_by_id"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "schedule_option_id"
-        in: "path"
-        description: "ID of schedule_option to return"
-        required: true
-        type: "integer"
-        minimum: 0
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/ScheduleOption"
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "ScheduleOption not found"
-      security:
-      - classdeck_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.schedule_option_controller"
     delete:
       tags:
       - "schedule_option"
@@ -845,70 +791,7 @@ paths:
       security:
       - classdeck_auth: []
       x-swagger-router-controller: "swagger_server.controllers.schedule_option_section_controller"
-    put:
-      tags:
-      - "schedule_option_section"
-      summary: "Update an existing schedule_option_section"
-      operationId: "update_schedule_option_section"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "ScheduleOptionSection object that needs to be updated in the\
-          \ system"
-        required: true
-        schema:
-          $ref: "#/definitions/ScheduleOptionSection"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "ScheduleOptionSection not found"
-        405:
-          description: "Validation exception"
-      security:
-      - classdeck_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.schedule_option_section_controller"
   /schedule_option_section/{schedule_id}/{crn}:
-    get:
-      tags:
-      - "schedule_option_section"
-      summary: "Find schedule_option_section by ID"
-      description: "Returns a single schedule_option_section"
-      operationId: "get_schedule_option_section_by_id"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "schedule_id"
-        in: "path"
-        description: "ID of the schedule related to the schedule_option_section to\
-          \ return"
-        required: true
-        type: "integer"
-        minimum: 0
-      - name: "crn"
-        in: "path"
-        description: "crn of the section related to the schedule_option_section to\
-          \ return"
-        required: true
-        type: "integer"
-        maximum: 99999
-        minimum: 0
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/ScheduleOptionSection"
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "ScheduleOptionSection not found"
-      security:
-      - classdeck_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.schedule_option_section_controller"
     delete:
       tags:
       - "schedule_option_section"
@@ -1244,63 +1127,21 @@ paths:
       parameters:
       - name: "nuid"
         in: "path"
-        description: "nuid of the student related to the student_taken_classes to\
-          \ return"
+        description: "nuid of the student related to the student_taken_classes to return"
         required: true
         type: "integer"
         minimum: 1
       responses:
         200:
           description: "successful operation"
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "StudentTakenClasses not found"
-  /student_taken_classes/{nuid}/{class_dept}/{class_number}:
-    get:
-      tags:
-      - "student_taken_classes"
-      summary: "Find student_taken_classes by ID"
-      description: "Returns a single student_taken_classes"
-      operationId: "get_student_taken_classes_by_id"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "nuid"
-        in: "path"
-        description: "nuid of the student related to the student_taken_classes to\
-          \ return"
-        required: true
-        type: "integer"
-        minimum: 1
-      - name: "class_dept"
-        in: "path"
-        description: "short code of the department of the class related to the student_taken_classes\
-          \ to return"
-        required: true
-        type: "string"
-        maxLength: 5
-        minLength: 2
-      - name: "class_number"
-        in: "path"
-        description: "number of the class related to the student_taken_classes to\
-          \ return"
-        required: true
-        type: "integer"
-        maximum: 9999
-        minimum: 0
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/StudentTakenClasses"
         400:
           description: "Invalid ID supplied"
         404:
           description: "StudentTakenClasses not found"
       security:
-      - classdeck_auth: []
+        - classdeck_auth: []
       x-swagger-router-controller: "swagger_server.controllers.student_taken_classes_controller"
+  /student_taken_classes/{nuid}/{class_dept}/{class_number}:
     delete:
       tags:
       - "student_taken_classes"
@@ -1561,21 +1402,13 @@ definitions:
       semester:
         type: "string"
         description: "a semester offered during a year"
-        enum:
-        - "fall"
-        - "spring"
-        - "summer 1"
-        - "summer 2"
-        - "full summer"
-      year:
-        type: "integer"
-        minimum: 2000
-        maximum: 3000
+      title:
+        type: "string"
     example:
       schedule_id: 1
       nuid: 1
       semester: "fall"
-      year: 2019
+      title: "EXAMPLE AGVJAKG"
   ScheduleOptionSection:
     type: "object"
     properties:

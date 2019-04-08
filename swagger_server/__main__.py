@@ -33,7 +33,7 @@ def main():
     app.app.json_encoder = encoder.JSONEncoder
     app.add_api('swagger.yaml', arguments={'title': 'ClassDeck Project'})
     connexion.DB_ENG = get_db()
-    connexion.DB = connect_db(connexion.DB_ENG)
+    connexion.DB = connect_db(get_db())
     connexion.JWT_verify = verify_JWT
     connexion.JWT_generate_token = generate_token
     cors = CORS(app.app, supports_credentials=True)
@@ -80,8 +80,7 @@ def get_db():
     current application context.
     """
     db_engine = create_engine(
-        'mysql+pymysql://{0[userName]}:{0[password]}@{0[serverName]}:{0[portNumber]}/{0[dbName]}'.format(settings),
-        isolation_level='READ_COMMITTED')
+        'mysql+pymysql://{0[userName]}:{0[password]}@{0[serverName]}:{0[portNumber]}/{0[dbName]}'.format(settings))
     return db_engine
 
 

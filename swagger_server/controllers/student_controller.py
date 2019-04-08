@@ -11,7 +11,14 @@ from sqlalchemy import exc
 
 from flask import make_response
 
-def logged_in_student_data():
+
+def logged_in_student_data(tries=0):
+    def retry():
+        if tries < 5:
+            return logged_in_student_data(tries + 1)
+        else:
+            return "INTERNAL SERVER ERROR", 500
+
     try:
         session_cookie = connexion.request.cookies.get("session")
         session_NUID = connexion.JWT_verify(session_cookie)
@@ -29,7 +36,8 @@ def logged_in_student_data():
         else:
             return "User not logged in.", 400
     except:
-        return "INTERNAL SERVER ERROR", 500
+        return retry()
+
 
 def create_student(body):  # noqa: E501
     """Create student

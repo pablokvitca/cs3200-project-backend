@@ -15,7 +15,7 @@ class ScheduleOption(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, schedule_id: int=None, nuid: int=None, semester: str=None, year: int=None):  # noqa: E501
+    def __init__(self, schedule_id: int=None, nuid: int=None, semester: str=None, title: str=None):  # noqa: E501
         """ScheduleOption - a model defined in Swagger
 
         :param schedule_id: The schedule_id of this ScheduleOption.  # noqa: E501
@@ -24,27 +24,27 @@ class ScheduleOption(Model):
         :type nuid: int
         :param semester: The semester of this ScheduleOption.  # noqa: E501
         :type semester: str
-        :param year: The year of this ScheduleOption.  # noqa: E501
-        :type year: int
+        :param title: The title of this ScheduleOption.  # noqa: E501
+        :type title: str
         """
         self.swagger_types = {
             'schedule_id': int,
             'nuid': int,
             'semester': str,
-            'year': int
+            'title': str
         }
 
         self.attribute_map = {
             'schedule_id': 'schedule_id',
             'nuid': 'nuid',
             'semester': 'semester',
-            'year': 'year'
+            'title': 'title'
         }
 
         self._schedule_id = schedule_id
         self._nuid = nuid
         self._semester = semester
-        self._year = year
+        self._title = title
 
     @classmethod
     def from_dict(cls, dikt) -> 'ScheduleOption':
@@ -119,36 +119,26 @@ class ScheduleOption(Model):
         :param semester: The semester of this ScheduleOption.
         :type semester: str
         """
-        allowed_values = ["fall", "spring", "summer 1", "summer 2", "full summer"]  # noqa: E501
-        if semester not in allowed_values:
-            raise ValueError(
-                "Invalid value for `semester` ({0}), must be one of {1}"
-                .format(semester, allowed_values)
-            )
 
         self._semester = semester
 
     @property
-    def year(self) -> int:
-        """Gets the year of this ScheduleOption.
+    def title(self) -> str:
+        """Gets the title of this ScheduleOption.
 
 
-        :return: The year of this ScheduleOption.
-        :rtype: int
+        :return: The title of this ScheduleOption.
+        :rtype: str
         """
-        return self._year
+        return self._title
 
-    @year.setter
-    def year(self, year: int):
-        """Sets the year of this ScheduleOption.
+    @title.setter
+    def title(self, title: str):
+        """Sets the title of this ScheduleOption.
 
 
-        :param year: The year of this ScheduleOption.
-        :type year: int
+        :param title: The title of this ScheduleOption.
+        :type title: str
         """
-        if year is not None and year > 3000:  # noqa: E501
-            raise ValueError("Invalid value for `year`, must be a value less than or equal to `3000`")  # noqa: E501
-        if year is not None and year < 2000:  # noqa: E501
-            raise ValueError("Invalid value for `year`, must be a value greater than or equal to `2000`")  # noqa: E501
 
-        self._year = year
+        self._title = title
