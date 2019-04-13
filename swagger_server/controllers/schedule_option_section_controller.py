@@ -43,7 +43,7 @@ def add_schedule_option_section(body, tries=0):  # noqa: E501
     return "Bad Request", 400
 
 
-def delete_schedule_option_section(schedule_id, crn):  # noqa: E501
+def delete_schedule_option_section(schedule_id, crn, tries=0):  # noqa: E501
     """Deletes a schedule_option_section
 
      # noqa: E501
@@ -57,7 +57,7 @@ def delete_schedule_option_section(schedule_id, crn):  # noqa: E501
     """
     def retry():
         if tries < 5:
-            delete_pursued_degree(nuid, degree_id, tries + 1)
+            delete_schedule_option_section(schedule_id, crn, tries + 1)
 
     delete_string = "DELETE FROM schedule_option_section WHERE schedule_option_id = {0} AND section_crn = {1};"\
         .format(schedule_id, crn)

@@ -94,11 +94,14 @@ def get_schedule_option_by_nuid(nuid):  # noqa: E501
                 sec.professor,
                 mt.start_time,
                 mt.end_time,
-                mt.meeting_days
+                mt.meeting_days,
+                cls.name,
+                cls.description
             FROM schedule_option AS opt
             LEFT OUTER JOIN schedule_option_section AS opt_s ON opt.schedule_option_id = opt_s.schedule_option_id
             LEFT OUTER JOIN section AS sec ON opt_s.section_crn = sec.crn
             LEFT OUTER JOIN meeting_times AS mt ON sec.crn = mt.crn
+            NATURAL JOIN class AS cls
             WHERE nuid = {};
             """.format(nuid)
     try:
@@ -116,13 +119,15 @@ def get_schedule_option_by_nuid(nuid):  # noqa: E501
                 "sections": []
             }
             for schedule_option_id, title, semester_id, crn, class_dept, \
-                    class_number, professor, start_time, end_time, meeting_days in result.fetchall():
+                    class_number, professor, start_time, end_time, meeting_days, cname, cdesc in result.fetchall():
                 if opt["schedule_option_id"] == schedule_option_id:
                     opt["sections"].append({
                         "class_dept": class_dept,
                         "class_number": class_number,
                         "professor": professor,
-                        "crn": crn
+                        "crn": crn,
+                        "cname": cname,
+                        "cdesc": cdesc
                     })
                 else:
                     if opt["schedule_option_id"] != -1:
@@ -139,7 +144,9 @@ def get_schedule_option_by_nuid(nuid):  # noqa: E501
                             "class_dept": class_dept,
                             "class_number": class_number,
                             "professor": professor,
-                            "crn": crn
+                            "crn": crn,
+                            "cname": cname,
+                            "cdesc": cdesc
                         })
             if opt["schedule_option_id"] != -1:
                 res.append(opt)

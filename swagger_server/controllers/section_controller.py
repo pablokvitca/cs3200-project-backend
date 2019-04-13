@@ -124,10 +124,13 @@ def list_sections_filtered(sch_opt_id):
             "class_number": -1,
             "professor": -1,
             "semester_id": -1,
+            "cname": -1,
+            "cdesc": -1,
             "meeting_times": []
         }
 
-        for crn, class_dept, class_number, professor, semester_id, start_time, end_time, meeting_days in cursor.fetchall():
+        for crn, class_dept, class_number, professor, semester_id, \
+                start_time, end_time, meeting_days, cname, cdesc in cursor.fetchall():
             if sec["crn"] == crn:
                 if not isinstance(meeting_days, type(None)):
                     sec["meeting_times"].append({
@@ -144,6 +147,8 @@ def list_sections_filtered(sch_opt_id):
                     "class_number": class_number,
                     "professor": professor,
                     "semester_id": semester_id,
+                    "cname": cname,
+                    "cdesc": cdesc,
                     "meeting_times": []
                 }
                 if not isinstance(meeting_days, type(None)):
