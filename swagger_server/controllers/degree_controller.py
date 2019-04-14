@@ -96,7 +96,9 @@ def list_degrees(tries=0):  # noqa: E501
             SELECT * FROM degree;
             """
     try:
-        result = connexion.DB.execute(select_string)
+        db_conn = connexion.DB(connexion.DB_ENG)
+        result = db_conn.execute(select_string)
+        db_conn.close()
         res = []
         for name, degree_id, degree_type, college_id in result.fetchall():
             r = Degree(degree_id, name, college_id, degree_type)
@@ -123,7 +125,9 @@ def list_degrees_by_college(college_id):  # noqa: E501
                         WHERE college_ID = "{}"
                         """.format(college_id)
     try:
-        result = connexion.DB.execute(select_string)
+        db_conn = connexion.DB(connexion.DB_ENG)
+        result = db_conn.execute(select_string)
+        db_conn.close()
         for row in result:
             res = {
                 'name': row["name"],
@@ -135,18 +139,3 @@ def list_degrees_by_college(college_id):  # noqa: E501
         return "Object not found", 404
     except exc.IntegrityError:
         return "Internal Server Error", 500
-
-
-def update_degree(body):  # noqa: E501
-    """Update an existing degree
-
-     # noqa: E501
-
-    :param body: Degree object that needs to be updated in the system
-    :type body: dict | bytes
-
-    :rtype: None
-    """
-    if connexion.request.is_json:
-        body = Degree.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'

@@ -66,7 +66,9 @@ def get_student_taken_classes_by_nuid(nuid, tries=0):  # noqa: E501
         session_cookie = connexion.request.cookies.get("session")
         session_NUID = connexion.JWT_verify(session_cookie)
         if session_NUID == str(nuid).zfill(9):
-            result = connexion.DB.execute(select_string)
+            db_conn = connexion.DB(connexion.DB_ENG)
+            result = db_conn.execute(select_string)
+            db_conn.close()
             res = []
             for nuid, class_dept, class_number, transferred, current in result.fetchall():
                 r = StudentTakenClasses(nuid, class_dept, class_number, transferred, current)

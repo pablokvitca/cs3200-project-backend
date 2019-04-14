@@ -24,7 +24,9 @@ def get_department_by_short_code(department_short_code):  # noqa: E501
             WHERE short_name = "{}"
             """.format(department_short_code)
     try:
-        result = connexion.DB.execute(select_string)
+        db_conn = connexion.DB(connexion.DB_ENG)
+        result = db_conn.execute(select_string)
+        db_conn.close()
         for row in result:
             res = {
                 'short_name': row["short_name"],
@@ -49,7 +51,9 @@ def list_department():  # noqa: E501
             SELECT * FROM department
             """
     try:
-        result = connexion.DB.execute(select_string)
+        db_conn = connexion.DB(connexion.DB_ENG)
+        result = db_conn.execute(select_string)
+        db_conn.close()
         res = []
         for row in result:
             r = Department.from_dict(row)

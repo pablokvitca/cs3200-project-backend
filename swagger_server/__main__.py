@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import connexion
+from sqlalchemy.engine import Engine
+
 from swagger_server import encoder
 import sqlalchemy
 from sqlalchemy import create_engine
@@ -32,15 +34,15 @@ def main():
     app = connexion.App(__name__, specification_dir='./swagger/')
     app.app.json_encoder = encoder.JSONEncoder
     app.add_api('swagger.yaml', arguments={'title': 'ClassDeck Project'})
-    connexion.DB_ENG = get_db()
-    connexion.DB = connect_db(get_db())
-    connexion.JWT_verify = verify_JWT
+    connexion.DB_ENG = get_db_engine()
+    connexion.DB = get_db_connection
+    connexion.JWT_verify = verify_jwt
     connexion.JWT_generate_token = generate_token
-    cors = CORS(app.app, supports_credentials=True)
+    connexion.cors = CORS(app.app, supports_credentials=True)
     app.run(port=8080)
 
 
-def verify_JWT(cookie):
+def verify_jwt(cookie):
     """If the user is log in is valid, then returns the user id
     else, returns False
     """
@@ -75,27 +77,32 @@ def _current_timestamp():
     return int(time.time())
 
 
-def get_db():
+def get_db_connection(eng: Engine):
+    return eng.connect()
+
+
+def get_db_engine():
     """Opens a new database connection if there is none yet for the
     current application context.
     """
     db_engine = create_engine(
-        'mysql+pymysql://{0[userName]}:{0[password]}@{0[serverName]}:{0[portNumber]}/{0[dbName]}'.format(settings))
+        'mysql+pymysql://{0[userName]}:{0[password]}@{0[serverName]}:{0[portNumber]}/{0[dbName]}'.format(settings),
+        isolation_level="READ_COMMITTED")
     return db_engine
 
 
-def close_db(error):
-    """Closes the database again at the end of the request."""
-    if hasattr(g, 'db_conn'):
-        g.db_conn.close()
-
-
-def connect_db(db):
+def test_db_connection_db(db) -> bool:
     print('Trying to connect to database')
+    # try:
     db_conn = db.connect()
     print('Connected to database')
-    return db_conn
+    db_conn.close()
+    return True
+    # except Exception as e: ## TODO
+    #     print('Error connecting to database. Please check your config.')
+    #     return False
 
 
+# Startup the server:
 if __name__ == '__main__':
     main()

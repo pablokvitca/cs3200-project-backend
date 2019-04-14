@@ -32,7 +32,9 @@ def add_schedule_option_section(body, tries=0):  # noqa: E501
         try:
             session_cookie = connexion.request.cookies.get("session")
             session_NUID = connexion.JWT_verify(session_cookie)
-            result = connexion.DB.execute(insert_string)
+            db_conn = connexion.DB(connexion.DB_ENG)
+            result = db_conn.execute(insert_string)
+            db_conn.close()
             return ["Accepted", result.lastrowid], 201
         except exc.IntegrityError as err:
             return "Could add section for schedule_option", 406
@@ -64,7 +66,9 @@ def delete_schedule_option_section(schedule_id, crn, tries=0):  # noqa: E501
     try:
         session_cookie = connexion.request.cookies.get("session")
         session_NUID = connexion.JWT_verify(session_cookie)
-        connexion.DB.execute(delete_string)
+        db_conn = connexion.DB(connexion.DB_ENG)
+        result = db_conn.execute(delete_string)
+        db_conn.close()
         return "Accepted", 201
     except exc.IntegrityError:
         return "Could not remove section", 202

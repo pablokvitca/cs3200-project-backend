@@ -25,7 +25,9 @@ def get_class_by_id(class_department, class_number):  # noqa: E501
                     WHERE class_dept = "{0}" AND class_number = "{1}"
                     """.format(class_department, class_number)
     try:
-        result = connexion.DB.execute(select_string)
+        db_conn = connexion.DB(connexion.DB_ENG)
+        result = db_conn.execute(select_string)
+        db_conn.close()
         for row in result:
             res = {
                 'class_dept': row["class_dept"],
@@ -50,6 +52,7 @@ def list_classes(tries=0):  # noqa: E501
     :rtype: None
     """
     def retry():
+        print("RETRYING QUERY. BAD. {}".format(tries))
         if tries < 5:
             return list_classes(tries + 1)
         else:
@@ -59,7 +62,9 @@ def list_classes(tries=0):  # noqa: E501
             SELECT * FROM class
             """
     try:
-        result = connexion.DB.execute(select_string)
+        db_conn = connexion.DB(connexion.DB_ENG)
+        result = db_conn.execute(select_string)
+        db_conn.close()
         res = []
         for row in result:
             r = ModelClass.from_dict(row)
@@ -90,7 +95,9 @@ def list_classes_filtered():  # noqa: E501
               SELECT * FROM class
               """
     try:
-        result = connexion.DB.execute(select_string)
+        db_conn = connexion.DB(connexion.DB_ENG)
+        result = db_conn.execute(select_string)
+        db_conn.close()
         res = []
         for row in result:
             res.append({

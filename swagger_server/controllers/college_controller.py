@@ -24,7 +24,9 @@ def get_college_by_id(college_id):  # noqa: E501
                 WHERE ID = "{}"
                 """.format(college_id)
     try:
-        result = connexion.DB.execute(select_string)
+        db_conn = connexion.DB(connexion.DB_ENG)
+        result = db_conn.execute(select_string)
+        db_conn.close()
         for row in result:
             res = {
                 'name': row["name"],
@@ -50,7 +52,9 @@ def list_colleges():  # noqa: E501
                 SELECT * FROM college
                 """
     try:
-        result = connexion.DB.execute(select_string)
+        db_conn = connexion.DB(connexion.DB_ENG)
+        result = db_conn.execute(select_string)
+        db_conn.close()
         res = []
         for row in result:
             r = College.from_dict(row)

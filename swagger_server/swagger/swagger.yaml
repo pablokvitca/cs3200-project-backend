@@ -352,32 +352,6 @@ paths:
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.degree_controller"
-    put:
-      tags:
-      - "degree"
-      summary: "Update an existing degree"
-      operationId: "update_degree"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Degree object that needs to be updated in the system"
-        required: true
-        schema:
-          $ref: "#/definitions/Degree"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Degree not found"
-        405:
-          description: "Validation exception"
-      security:
-      - internal_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.degree_controller"
   /degree/by_college/{college_id}:
     get:
       tags:

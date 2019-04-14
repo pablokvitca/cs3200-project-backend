@@ -35,7 +35,9 @@ def get_section_by_crn(crn):  # noqa: E501
                         WHERE sec.crn = "{}"
                         """.format(crn)
     try:
-        result = connexion.DB.execute(select_string)
+        db_conn = connexion.DB(connexion.DB_ENG)
+        result = db_conn.execute(select_string)
+        db_conn.close()
         res = []
         opt = {
                 'crn': -1,
@@ -94,7 +96,9 @@ def list_sections():  # noqa: E501
                 SELECT * FROM section
                 """
     try:
-        result = connexion.DB.execute(select_string)
+        db_conn = connexion.DB(connexion.DB_ENG)
+        result = db_conn.execute(select_string)
+        db_conn.close()
         res = []
         for row in result:
             r = Section.from_dict(row)
@@ -126,11 +130,12 @@ def list_sections_filtered(sch_opt_id):
             "semester_id": -1,
             "cname": -1,
             "cdesc": -1,
-            "meeting_times": []
+            "meeting_times": [],
+            "part_of_degree": -1
         }
 
         for crn, class_dept, class_number, professor, semester_id, \
-                start_time, end_time, meeting_days, cname, cdesc in cursor.fetchall():
+                start_time, end_time, meeting_days, cname, cdesc, part_of_degree in cursor.fetchall():
             if sec["crn"] == crn:
                 if not isinstance(meeting_days, type(None)):
                     sec["meeting_times"].append({
@@ -149,7 +154,8 @@ def list_sections_filtered(sch_opt_id):
                     "semester_id": semester_id,
                     "cname": cname,
                     "cdesc": cdesc,
-                    "meeting_times": []
+                    "meeting_times": [],
+                    "part_of_degree": part_of_degree
                 }
                 if not isinstance(meeting_days, type(None)):
                     sec["meeting_times"].append({

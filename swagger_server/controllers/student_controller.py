@@ -23,7 +23,9 @@ def logged_in_student_data(tries=0):
         session_cookie = connexion.request.cookies.get("session")
         session_NUID = connexion.JWT_verify(session_cookie)
         select_string = "SELECT * FROM student WHERE nuid = {}".format(session_NUID)
-        result = connexion.DB.execute(select_string)
+        db_conn = connexion.DB(connexion.DB_ENG)
+        result = db_conn.execute(select_string)
+        db_conn.close()
         res = []
         for r in result.fetchall():
             res.append({
@@ -64,7 +66,9 @@ def create_student(body):  # noqa: E501
                 "{3}");
             """.format(body.name, body.email, body.nuid, body.password)
         try:
-            connexion.DB.execute(insert_string)
+            db_conn = connexion.DB(connexion.DB_ENG)
+            db_conn.execute(insert_string)
+            db_conn.close()
             return "Accepted", 201
         except exc.IntegrityError:
             return "Already Exists", 202
@@ -86,7 +90,9 @@ def delete_student(nuid):  # noqa: E501
         WHERE nuid = "{}"
         """.format(nuid)
     try:
-        connexion.DB.execute(delete_string)
+        db_conn = connexion.DB(connexion.DB_ENG)
+        db_conn.execute(delete_string)
+        db_conn.close()
         return "Deleted", 204
     except exc.IntegrityError:
         return "Could not delete object", 403
@@ -113,7 +119,9 @@ def get_student_by_nuid(nuid):  # noqa: E501
             nuid = {}
         """.format(nuid)
     try:
-        result = connexion.DB.execute(select_string)
+        db_conn = connexion.DB(connexion.DB_ENG)
+        result = db_conn.execute(select_string)
+        db_conn.close()
         for row in result:
             res = {
                 'name': row["name"],
@@ -151,9 +159,11 @@ def login_student(nuid, password):  # noqa: E501
             AND
             pass = "{1}";
         """.format(nuid, password)
-    result_user = connexion.DB.execute(select_string)
+    db_conn = connexion.DB(connexion.DB_ENG)
+    result = db_conn.execute(select_string)
+    db_conn.close()
 
-    for row in result_user:
+    for row in result:
         resp = make_response("Student is now logged in", 200)
         session = connexion.JWT_generate_token(nuid)
         resp.set_cookie("session", session)

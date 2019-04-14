@@ -34,7 +34,9 @@ def add_pursued_degree(body):  # noqa: E501
             session_cookie = connexion.request.cookies.get("session")
             session_NUID = connexion.JWT_verify(session_cookie)
             if session_NUID == str(body.nuid).zfill(9):
-                connexion.DB.execute(insert_string)
+                db_conn = connexion.DB(connexion.DB_ENG)
+                result = db_conn.execute(insert_string)
+                db_conn.close()
                 return "Accepted", 201
             else:
                 return "Forbidden", 403
@@ -68,7 +70,9 @@ def delete_pursued_degree(nuid, degree_id, tries:int=0):  # noqa: E501
         session_cookie = connexion.request.cookies.get("session")
         session_NUID = connexion.JWT_verify(session_cookie)
         if session_NUID == str(nuid).zfill(9):
-            connexion.DB.execute(delete_string)
+            db_conn = connexion.DB(connexion.DB_ENG)
+            result = db_conn.execute(delete_string)
+            db_conn.close()
             return "Accepted", 201
         else:
             return "Forbidden", 403
@@ -108,7 +112,9 @@ def get_pursued_degree_by_nuid(nuid, tries=0):  # noqa: E501
         session_cookie = connexion.request.cookies.get("session")
         session_NUID = connexion.JWT_verify(session_cookie)
         if session_NUID == str(nuid).zfill(9):
-            result = connexion.DB.execute(select_string)
+            db_conn = connexion.DB(connexion.DB_ENG)
+            result = db_conn.execute(select_string)
+            db_conn.close()
             res = []
             for nuid, degree_id in result.fetchall():
                 r = PursuedDegree(nuid, degree_id)

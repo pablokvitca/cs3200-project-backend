@@ -6,6 +6,7 @@ from swagger_server import util
 
 from sqlalchemy import exc
 
+
 def add_schedule_option(body):  # noqa: E501
     """Add a schedule_option to the classdeck
 
@@ -27,7 +28,11 @@ def add_schedule_option(body):  # noqa: E501
             session_cookie = connexion.request.cookies.get("session")
             session_NUID = connexion.JWT_verify(session_cookie)
             if session_NUID == str(body.nuid).zfill(9):
-                result = connexion.DB.execute(insert_string)
+                db_conn = connexion.DB(connexion.DB_ENG)
+                trans = db_conn.begin()
+                result = db_conn.execute(insert_string)
+                trans.commit()
+                db_conn.close()
                 return ["Accepted", result.lastrowid], 201
             else:
                 return "Forbidden", 403
@@ -59,7 +64,9 @@ def delete_schedule_option(schedule_option_id, tries=0):  # noqa: E501
     try:
         session_cookie = connexion.request.cookies.get("session")
         session_NUID = connexion.JWT_verify(session_cookie)
-        connexion.DB.execute(delete_string)
+        db_conn = connexion.DB(connexion.DB_ENG)
+        result = db_conn.execute(delete_string)
+        db_conn.close()
         return "Accepted", 201
     except exc.IntegrityError:
         return "Could not add pursued degree", 406
@@ -96,20 +103,22 @@ def get_schedule_option_by_nuid(nuid):  # noqa: E501
                 mt.end_time,
                 mt.meeting_days,
                 cls.name,
-                cls.description
+                cls.description,
+                satisfies_degree_requirement({0}, cls.class_dept, cls.class_number) AS part_of_degree
             FROM schedule_option AS opt
             LEFT OUTER JOIN schedule_option_section AS opt_s ON opt.schedule_option_id = opt_s.schedule_option_id
             LEFT OUTER JOIN section AS sec ON opt_s.section_crn = sec.crn
             LEFT OUTER JOIN meeting_times AS mt ON sec.crn = mt.crn
-            NATURAL JOIN class AS cls
-            WHERE nuid = {};
+            LEFT OUTER JOIN class AS cls ON (sec.class_dept = cls.class_dept AND sec.class_number = cls.class_number)
+            WHERE nuid = {0};
             """.format(nuid)
     try:
         session_cookie = connexion.request.cookies.get("session")
         session_NUID = connexion.JWT_verify(session_cookie)
         if session_NUID == str(nuid).zfill(9):
-            print(connexion.DB.default_isolation_level)
-            result = connexion.DB.execute(select_string)
+            db_conn = connexion.DB(connexion.DB_ENG)
+            result = db_conn.execute(select_string)
+            db_conn.close()
             res = []
             opt = {
                 "schedule_option_id": -1,
@@ -119,7 +128,8 @@ def get_schedule_option_by_nuid(nuid):  # noqa: E501
                 "sections": []
             }
             for schedule_option_id, title, semester_id, crn, class_dept, \
-                    class_number, professor, start_time, end_time, meeting_days, cname, cdesc in result.fetchall():
+                class_number, professor, start_time, end_time, meeting_days, \
+                cname, cdesc, part_of_degree in result.fetchall():
                 if opt["schedule_option_id"] == schedule_option_id:
                     opt["sections"].append({
                         "class_dept": class_dept,
@@ -127,7 +137,8 @@ def get_schedule_option_by_nuid(nuid):  # noqa: E501
                         "professor": professor,
                         "crn": crn,
                         "cname": cname,
-                        "cdesc": cdesc
+                        "cdesc": cdesc,
+                        "part_of_degree": part_of_degree
                     })
                 else:
                     if opt["schedule_option_id"] != -1:
@@ -146,7 +157,8 @@ def get_schedule_option_by_nuid(nuid):  # noqa: E501
                             "professor": professor,
                             "crn": crn,
                             "cname": cname,
-                            "cdesc": cdesc
+                            "cdesc": cdesc,
+                            "part_of_degree": part_of_degree
                         })
             if opt["schedule_option_id"] != -1:
                 res.append(opt)

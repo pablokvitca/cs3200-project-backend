@@ -7,7 +7,9 @@ from swagger_server import util
 
 def list_semesters():
     select_string = "SELECT * FROM semester;"
-    result = connexion.DB.execute(select_string)
+    db_conn = connexion.DB(connexion.DB_ENG)
+    result = db_conn.execute(select_string)
+    db_conn.close()
     res = []
     for id, year, semester in result.fetchall():
         r = {

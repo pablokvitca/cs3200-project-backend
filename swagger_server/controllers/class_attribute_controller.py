@@ -28,7 +28,9 @@ def get_class_attributes(class_department, class_number):  # noqa: E501
                         WHERE class_dept = "{0}" AND class_number = "{1}"
                         """.format(class_department, class_number)
     try:
-        result = connexion.DB.execute(select_string)
+        db_conn = connexion.DB(connexion.DB_ENG)
+        result = db_conn.execute(select_string)
+        db_conn.close()
         for row in result:
             res = {
                 'attr_name': row["attr_name"],

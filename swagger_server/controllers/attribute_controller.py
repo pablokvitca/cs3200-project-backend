@@ -21,15 +21,14 @@ def add_attribute(body):  # noqa: E501
     if connexion.request.is_json:
         body = Attribute.from_dict(connexion.request.get_json())  # noqa: E501
         insert_string = """
-            INSERT INTO attributes (
-                name,
-                nu_path)
-            VALUES (
-                "{}",
-                {});
+            INSERT INTO attributes (name, nu_path)
+            VALUES ("{}", {});
             """.format(body.name, body.nupath)
         try:
-            connexion.DB.execute(insert_string)
+            db_conn = connexion.DB(connexion.DB_ENG)
+            db_conn.execute(insert_string)
+            db_conn.commit()
+            db_conn.close()
             return "Accepted", 201
         except exc.IntegrityError:
             return "Already Exists", 202
@@ -51,7 +50,10 @@ def delete_attribute(attribute_name):  # noqa: E501
         WHERE name = "{}"
         """.format(attribute_name)
     try:
-        connexion.DB.execute(delete_string)
+        db_conn = connexion.DB(connexion.DB_ENG)
+        db_conn.execute(delete_string)
+        db_conn.commit()
+        db_conn.close()
         return "Deleted", 204
     except exc.IntegrityError:
         return "Could not delete object", 403
@@ -72,7 +74,9 @@ def get_attribute_by_name(attribute_name):  # noqa: E501
         WHERE name = "{}"
         """.format(attribute_name)
     try:
-        result = connexion.DB.execute(select_string)
+        db_conn = connexion.DB(connexion.DB_ENG)
+        result = db_conn.execute(select_string)
+        db_conn.close()
         for row in result:
             res = {
                 'name': row["name"],
@@ -110,7 +114,10 @@ def update_attribute(body):  # noqa: E501
                 nu_path = {1};
             """.format(body.name, body.nupath)
         try:
-            connexion.DB.execute(update_string)
+            db_conn = connexion.DB(connexion.DB_ENG)
+            db_conn.execute(update_string)
+            db_conn.commit()
+            db_conn.close()
             return "Accepted", 201
         except exc.IntegrityError:
             return "Already Exists", 202
@@ -129,7 +136,9 @@ def list_attributes():  # noqa: E501
                 SELECT * FROM attributes
                 """
     try:
-        result = connexion.DB.execute(select_string)
+        db_conn = connexion.DB(connexion.DB_ENG)
+        result = db_conn.execute(select_string)
+        db_conn.close()
         res = []
         for row in result:
             r = Attribute.from_dict(row)
