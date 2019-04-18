@@ -43,7 +43,7 @@ def get_class_by_id(class_department, class_number):  # noqa: E501
         return "Internal Server Error", 500
 
 
-def list_classes(tries=0):  # noqa: E501
+def list_classes():  # noqa: E501
     """List all classes
 
     Returns all classes # noqa: E501
@@ -51,13 +51,6 @@ def list_classes(tries=0):  # noqa: E501
 
     :rtype: None
     """
-    def retry():
-        print("RETRYING QUERY. BAD. {}".format(tries))
-        if tries < 5:
-            return list_classes(tries + 1)
-        else:
-            return "INTERNAL SERVER ERROR", 500
-
     select_string = """
             SELECT * FROM class
             """
@@ -67,7 +60,6 @@ def list_classes(tries=0):  # noqa: E501
         db_conn.close()
         res = []
         for row in result:
-            r = ModelClass.from_dict(row)
             res.append({
                 'class_dept': row["class_dept"],
                 'class_number': row["class_number"],
@@ -79,8 +71,42 @@ def list_classes(tries=0):  # noqa: E501
         return res, 200
     except exc.IntegrityError:
         return "Internal Server Error", 500
-    except:
-        return retry()
+
+
+def list_classes_by_semester(semester):
+    select_string = """
+                SELECT
+                    DISTINCT
+                    c.class_dept,
+                    c.class_number,
+                    c.class_level,
+                    c.name,
+                    c.description,
+                    c.credit_hours
+                FROM class AS c
+                RIGHT OUTER JOIN section AS s ON c.class_dept = s.class_dept AND c.class_number = s.class_number
+                WHERE s.semester_id = {0};
+                """.format(semester)
+    try:
+        db_conn = connexion.DB(connexion.DB_ENG)
+        result = db_conn.execute(select_string)
+        db_conn.close()
+        res = []
+        for row in result:
+            res.append({
+                'class_dept': row["class_dept"],
+                'class_number': row["class_number"],
+                'class_level': row["class_level"],
+                'name': row["name"],
+                'description': row["description"],
+                'credit_hours': row["credit_hours"]
+            })
+        if len(res) > 0:
+            return res, 200
+        else:
+            return "No classes found", 404
+    except exc.IntegrityError:
+        return "Internal Server Error", 500
 
 
 def list_classes_filtered():  # noqa: E501
