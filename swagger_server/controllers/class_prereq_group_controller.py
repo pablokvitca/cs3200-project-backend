@@ -8,6 +8,143 @@ from sqlalchemy import types
 from sqlalchemy import exc
 
 
+class ClassPrereq(object):
+
+    def __init__(self,
+                 pgc_group_id, pgc_min_fulfilled_req,
+                 pgc_parent_group_id, pgc_class_dept,
+                 pgc_class_number, pc_class_dept,
+                 pc_class_number, pc_id):
+        self.id = pc_id
+        self.class_dept = pc_class_dept
+        self.class_number = pc_class_number
+
+    def add_req(self,
+                pgc_group_id, pgc_min_fulfilled_req,
+                pgc_parent_group_id, pgc_class_dept,
+                pgc_class_number, pc_class_dept,
+                pc_class_number, pc_id):
+        pass
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "class_dept": self.class_dept,
+            "class_number": self.class_number
+        }
+
+
+class Prereq(object):
+
+    def __init__(self,
+                 pgc_group_id, pgc_min_fulfilled_req,
+                 pgc_parent_group_id, pgc_class_dept,
+                 pgc_class_number, pc_class_dept, pc_class_number, pc_id):
+        self.group_id = pgc_group_id
+        self.min_fulfilled_req = pgc_min_fulfilled_req
+        self.parent_group_id = pgc_parent_group_id
+        self.class_dept = pgc_class_dept
+        self.class_number = pgc_class_number
+        self.reqs = []
+        self.add_req(pgc_group_id, pgc_min_fulfilled_req,
+                     pgc_parent_group_id, pgc_class_dept,
+                     pgc_class_number, pc_class_dept, pc_class_number, pc_id)
+
+    def add_req(self,
+                pgc_group_id, pgc_min_fulfilled_req,
+                pgc_parent_group_id, pgc_class_dept,
+                pgc_class_number, pc_class_dept,
+                pc_class_number, pc_id):
+        if self.group_id == pgc_group_id:
+            if not isinstance(pc_id, type(None)):
+                self.reqs.append(ClassPrereq(pgc_group_id, pgc_min_fulfilled_req,
+                                             pgc_parent_group_id, pgc_class_dept,
+                                             pgc_class_number, pc_class_dept,
+                                             pc_class_number, pc_id))
+        else:
+            if self.group_id == pgc_parent_group_id:
+                found = False
+                for r in self.reqs:
+                    if isinstance(r, Prereq) and r.group_id == pgc_group_id:
+                        found = True
+                        r.reqs.append(ClassPrereq(pgc_group_id, pgc_min_fulfilled_req,
+                                                  pgc_parent_group_id, pgc_class_dept,
+                                                  pgc_class_number, pc_class_dept,
+                                                  pc_class_number, pc_id))
+                if not found:
+                    self.reqs.append(Prereq(pgc_group_id, pgc_min_fulfilled_req,
+                                            pgc_parent_group_id, pgc_class_dept,
+                                            pgc_class_number, pc_class_dept,
+                                            pc_class_number, pc_id))
+            else:
+                for r in self.reqs:
+                    r.add_req(pgc_group_id, pgc_min_fulfilled_req,
+                              pgc_parent_group_id, pgc_class_dept,
+                              pgc_class_number, pc_class_dept,
+                              pc_class_number, pc_id)
+
+    def to_dict(self):
+        if not isinstance(self.class_dept, type(None)) and not isinstance(self.class_number, type(None)):
+            res = {
+                "group_id": self.group_id,
+                "min_fulfilled_req": self.min_fulfilled_req,
+                "parent_group_id": self.parent_group_id,
+                "class_dept": self.class_dept,
+                "class_number": self.class_number,
+                "reqs": []
+            }
+        else:
+            res = {
+                "group_id": self.group_id,
+                "min_fulfilled_req": self.min_fulfilled_req,
+                "parent_group_id": self.parent_group_id,
+                "reqs": []
+            }
+        for r in self.reqs:
+            res["reqs"].append(r.to_dict())
+        return res
+
+
+def get_class_coreqs(class_department, class_number):
+    select_string = """
+                        SELECT
+                            pgc.group_id AS group_id,
+                            pgc.min_fulfilled_req AS min_fulfilled_req,
+                            pgc.class_dept AS class_dept,
+                            pgc.class_number AS class_number,
+                            pc.class_dept AS pc_class_dept,
+                            pc.class_number AS pc_class_number,
+                            pc.id AS pc_id
+                        FROM prereq_group_class AS pgc
+                        LEFT OUTER JOIN prereq_class AS pc ON pgc.group_id = pc.group_id
+                        WHERE pgc.class_dept = "{0}"
+                          AND pgc.class_number = {1}
+                          AND coreq_group = TRUE;
+                        """.format(class_department, class_number)
+    try:
+        db_conn = connexion.DB(connexion.DB_ENG)
+        result = db_conn.execute(select_string)
+        db_conn.close()
+        res = {}
+        for row in result:
+            if "reqs" not in res:
+                res = {
+                    "group_id": row["group_id"],
+                    "min_fulfilled_req": row["min_fulfilled_req"],
+                    "class_dept": row["class_dept"],
+                    "class_number": row["class_number"],
+                    "reqs": []
+                }
+            res["reqs"].append({
+                    "class_dept": row["pc_class_dept"],
+                    "class_number": row["pc_class_number"],
+                    "id": row["pc_id"]
+            })
+        return res, 200
+    except exc.IntegrityError:
+        return "Internal Server Error", 500
+
+
 def get_class_prereqs(class_department, class_number):  # noqa: E501
     """Lists prereqs for the given class
 
@@ -20,37 +157,6 @@ def get_class_prereqs(class_department, class_number):  # noqa: E501
 
     :rtype: None
     """
-    def insert_group_deep(g, pgc_group_id, pgc_min_fulfilled_req,
-                          pgc_parent_group_id, pgc_class_dept,
-                          pgc_class_number, pc_class_dept, pc_class_number, pc_id):
-        if g["group_id"] == pgc_group_id:
-            if not isinstance(pc_id, type(None)):
-                g["reqs"].append({
-                    "class_dept": pc_class_dept,
-                    "class_number": pc_class_number,
-                    "id": pc_id
-                })
-        elif g["group_id"] == pgc_parent_group_id:
-            n_req = {
-                "group_id": pgc_group_id,
-                "min_fulfilled_req": pgc_min_fulfilled_req,
-                "parent_group_id": pgc_parent_group_id,
-                "reqs": []
-            }
-            if not isinstance(pc_id, type(None)):
-                n_req["reqs"].append({
-                        "class_dept": pc_class_dept,
-                        "class_number": pc_class_number,
-                        "id": pc_id
-                    })
-            g["reqs"].append(n_req)
-        elif "reqs" in g:
-            for r in g["reqs"]:
-                insert_group_deep(r,
-                                  pgc_group_id, pgc_min_fulfilled_req,
-                                  pgc_parent_group_id, pgc_class_dept,
-                                  pgc_class_number, pc_class_dept, pc_class_number, pc_id)
-
     try:
         db_conn = connexion.DB_ENG.raw_connection()
         cursor = db_conn.cursor()
@@ -61,16 +167,14 @@ def get_class_prereqs(class_department, class_number):  # noqa: E501
             pgc_parent_group_id, pgc_class_dept, pgc_class_number, \
             pc_class_dept, pc_class_number, pc_id \
                 in cursor.fetchall():
-            if isinstance(pgc_parent_group_id, type(None)) and "group_id" not in res:
-                res["group_id"] = pgc_group_id
-                res["min_fulfilled_req"] = pgc_min_fulfilled_req
-                res["parent_group_id"] = pgc_parent_group_id
-                res["class_dept"] = pgc_class_dept
-                res["class_number"] = pgc_class_number
-                res["reqs"] = []
-            insert_group_deep(res, pgc_group_id, pgc_min_fulfilled_req,
-                              pgc_parent_group_id, pgc_class_dept,
-                              pgc_class_number, pc_class_dept, pc_class_number, pc_id)
-        return res, 200
+            if isinstance(res, Prereq):
+                res.add_req(pgc_group_id, pgc_min_fulfilled_req,
+                            pgc_parent_group_id, pgc_class_dept, pgc_class_number,
+                            pc_class_dept, pc_class_number, pc_id)
+            else:
+                res = Prereq(pgc_group_id, pgc_min_fulfilled_req,
+                             pgc_parent_group_id, pgc_class_dept, pgc_class_number,
+                             pc_class_dept, pc_class_number, pc_id)
+        return res if isinstance(res, dict) else res.to_dict(), 200
     except exc.IntegrityError:
         return "Internal Server Error", 500

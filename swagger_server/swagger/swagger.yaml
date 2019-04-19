@@ -221,6 +221,41 @@ paths:
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.class_attribute_controller"
+  /class_prereq_group/coreq/{class_department}/{class_number}:
+    get:
+      tags:
+        - "class_prereq_group"
+      summary: "Lists coreqs for the given class"
+      description: "Returns the coreqs for the given class"
+      operationId: "get_class_coreqs"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "class_department"
+          in: "path"
+          description: "short code of the Department related to the Class related to\
+          \ the ClassPrereqGroup to return"
+          required: true
+          type: "string"
+          maxLength: 5
+          minLength: 2
+        - name: "class_number"
+          in: "path"
+          description: "number of the Class related to the ClassPrereqGroup to return"
+          required: true
+          type: "integer"
+          maximum: 9999
+          minimum: 0
+      responses:
+        200:
+          description: "successful operation"
+        400:
+          description: "Invalid Class supplied"
+        404:
+          description: "Class not found"
+      security:
+        - internal_auth: []
+      x-swagger-router-controller: "swagger_server.controllers.class_prereq_group_controller"
   /class_prereq_group/{class_department}/{class_number}:
     get:
       tags:
@@ -861,6 +896,45 @@ paths:
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.section_controller"
+  /section/by_class/{semester_id}/{class_department}/{class_number}:
+    get:
+      tags:
+        - "section"
+      summary: "Lists sections for the given class"
+      description: "Returns the sections for the given class"
+      operationId: "list_sections_by_class"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "semester_id"
+          in: "path"
+          description: ""
+          required: true
+          type: "integer"
+        - name: "class_department"
+          in: "path"
+          description: ""
+          required: true
+          type: "string"
+          maxLength: 5
+          minLength: 2
+        - name: "class_number"
+          in: "path"
+          description: ""
+          required: true
+          type: "integer"
+          maximum: 9999
+          minimum: 0
+      responses:
+        200:
+          description: "successful operation"
+        400:
+          description: "Invalid Class supplied"
+        404:
+          description: "Class not found"
+      security:
+        - internal_auth: []
+      x-swagger-router-controller: "swagger_server.controllers.section_controller"
   /semester:
     get:
       tags:
@@ -875,6 +949,29 @@ paths:
           description: "successful operation"
       security:
       - internal_auth: []
+      x-swagger-router-controller: "swagger_server.controllers.semester_controller"
+  /semester/{semester_id}:
+    get:
+      tags:
+        - "semester"
+      summary: "Lists semester info for the given id"
+      description: ""
+      operationId: "get_semester_by_id"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "semester_id"
+          in: "path"
+          description: ""
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "Class not found"
+      security:
+        - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.semester_controller"
   /student:
     post:

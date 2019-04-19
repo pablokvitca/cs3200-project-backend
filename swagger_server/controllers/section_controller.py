@@ -84,6 +84,34 @@ def get_section_by_crn(crn):  # noqa: E501
         return "Internal Server Error", 500
 
 
+def list_sections_by_class(semester_id, class_department, class_number):
+    select_string = """
+                    SELECT * 
+                    FROM section AS s
+                    WHERE s.semester_id = {0}
+                      AND s.class_dept = "{1}"
+                      AND s.class_number = {2};
+                    """.format(semester_id, class_department, class_number)
+    try:
+        db_conn = connexion.DB(connexion.DB_ENG)
+        result = db_conn.execute(select_string)
+        db_conn.close()
+        res = []
+        for row in result:
+            r = Section.from_dict(row)
+            res.append({
+                'crn': row["crn"],
+                'class_dept': row["class_dept"],
+                'class_number': row["class_number"],
+                'professor': row["professor"],
+                'capacity': row["capacity"],
+                'registered': row["registered"]
+            })
+        return res, 200
+    except exc.IntegrityError:
+        return "Internal Server Error", 500
+
+
 def list_sections():  # noqa: E501
     """Lists all sections
 
@@ -103,7 +131,7 @@ def list_sections():  # noqa: E501
         for row in result:
             r = Section.from_dict(row)
             res.append({
-                'CRN': row["CRN"],
+                'crn': row["crn"],
                 'class_dept': row["class_dept"],
                 'class_number': row["class_number"],
                 'professor': row["professor"],
