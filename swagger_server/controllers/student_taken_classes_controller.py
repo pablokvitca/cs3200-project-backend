@@ -125,17 +125,3 @@ def get_student_taken_classes_by_nuid(nuid):  # noqa: E501
     except AttributeError:
         return "Forbidden", 403
 
-
-def update_student_taken_classes(body):  # noqa: E501
-    """Update an existing student_taken_classes
-
-     # noqa: E501
-
-    :param body: StudentTakenClasses object that needs to be updated in the system
-    :type body: dict | bytes
-
-    :rtype: None
-    """
-    if connexion.request.is_json:
-        body = StudentTakenClasses.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
