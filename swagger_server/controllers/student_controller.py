@@ -54,7 +54,7 @@ def create_student(body):  # noqa: E501
             db_conn.close()
             return "Accepted", 201
         except exc.IntegrityError:
-            return "Already Exists", 202
+            return "User for that NUID and/or email already exists", 404
     return "Bad Request", 400
 
 
