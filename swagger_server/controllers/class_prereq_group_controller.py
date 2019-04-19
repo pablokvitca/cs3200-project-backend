@@ -33,6 +33,13 @@ class ClassPrereq(object):
             "class_number": self.class_number
         }
 
+    def meets_prereqs(self, classes_taken):
+        me = {
+            "class_dept": self.class_dept,
+            "class_number": self.class_number
+        }
+        return me in classes_taken
+
 
 class Prereq(object):
 
@@ -104,6 +111,13 @@ class Prereq(object):
             res["reqs"].append(r.to_dict())
         return res
 
+    def meets_prereqs(self, classes_taken):
+        count_satisfied = 0
+        for r in self.reqs:
+            if r.meets_prereqs(classes_taken):
+                count_satisfied += 1
+        return count_satisfied >= self.min_fulfilled_req
+
 
 def get_class_coreqs(class_department, class_number):
     select_string = """
@@ -158,23 +172,28 @@ def get_class_prereqs(class_department, class_number):  # noqa: E501
     :rtype: None
     """
     try:
-        db_conn = connexion.DB_ENG.raw_connection()
-        cursor = db_conn.cursor()
-        cursor.callproc("select_prerequisites_recursive", [class_department, class_number])
-        db_conn.close()
-        res = {}
-        for pgc_group_id, pgc_min_fulfilled_req, \
-            pgc_parent_group_id, pgc_class_dept, pgc_class_number, \
-            pc_class_dept, pc_class_number, pc_id \
-                in cursor.fetchall():
-            if isinstance(res, Prereq):
-                res.add_req(pgc_group_id, pgc_min_fulfilled_req,
-                            pgc_parent_group_id, pgc_class_dept, pgc_class_number,
-                            pc_class_dept, pc_class_number, pc_id)
-            else:
-                res = Prereq(pgc_group_id, pgc_min_fulfilled_req,
-                             pgc_parent_group_id, pgc_class_dept, pgc_class_number,
-                             pc_class_dept, pc_class_number, pc_id)
+        res = get_class_prereqs_db(class_department, class_number)
         return res if isinstance(res, dict) else res.to_dict(), 200
     except exc.IntegrityError:
         return "Internal Server Error", 500
+
+
+def get_class_prereqs_db(class_department, class_number):
+    db_conn = connexion.DB_ENG.raw_connection()
+    cursor = db_conn.cursor()
+    cursor.callproc("select_prerequisites_recursive", [class_department, class_number])
+    db_conn.close()
+    res = {}
+    for pgc_group_id, pgc_min_fulfilled_req, \
+        pgc_parent_group_id, pgc_class_dept, pgc_class_number, \
+        pc_class_dept, pc_class_number, pc_id \
+            in cursor.fetchall():
+        if isinstance(res, Prereq):
+            res.add_req(pgc_group_id, pgc_min_fulfilled_req,
+                        pgc_parent_group_id, pgc_class_dept, pgc_class_number,
+                        pc_class_dept, pc_class_number, pc_id)
+        else:
+            res = Prereq(pgc_group_id, pgc_min_fulfilled_req,
+                         pgc_parent_group_id, pgc_class_dept, pgc_class_number,
+                         pc_class_dept, pc_class_number, pc_id)
+    return res

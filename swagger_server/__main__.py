@@ -11,17 +11,22 @@ from werkzeug.exceptions import Unauthorized
 from jose import JWTError, jwt
 import time
 from flask_cors import CORS
+import os
+
+# settings.py
+from dotenv import load_dotenv
+load_dotenv(override=True)
 
 settings = {
     # The name of the MySQL account to use (or empty for anonymous)
-    'userName': "root",
+    'userName': os.getenv("DB_USERNAME"),
     # The password for the MySQL account (or empty for anonymous)
-    'password': "rycbar12345",
-    'serverName': "127.0.0.1",    # The name of the computer running MySQL
+    'password': os.getenv("DB_PASSWORD"),
+    'serverName': os.getenv("DB_SERVER"),    # The name of the computer running MySQL
     # The port of the MySQL server (default is 3306)
-    'portNumber': 3306,
+    'portNumber': os.getenv("DB_PORT"),
     # The name of the database we are testing with (this default is installed with MySQL)
-    'dbName': "projectcs3200",
+    'dbName': os.getenv("DB_NAME"),
 }
 
 JWT_ISSUER = 'com.classdeck.classdeck'

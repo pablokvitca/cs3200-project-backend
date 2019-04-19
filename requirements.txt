@@ -6,3 +6,4 @@ pymysql
 python-jose[cryptography]
 six>=1.9
 flask-cors
+python-dotenv

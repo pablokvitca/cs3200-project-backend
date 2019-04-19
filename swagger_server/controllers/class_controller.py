@@ -134,7 +134,6 @@ def list_classes_filtered():  # noqa: E501
                 'description': row["description"],
                 'credit_hours': row["credit_hours"]
             })
-            res = ModelClass.from_dict(res)
         return res, 200
     except exc.IntegrityError:
         return "Internal Server Error", 500

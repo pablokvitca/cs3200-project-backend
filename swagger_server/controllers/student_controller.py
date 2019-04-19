@@ -12,33 +12,24 @@ from sqlalchemy import exc
 from flask import make_response
 
 
-def logged_in_student_data(tries=0):
-    def retry():
-        if tries < 5:
-            return logged_in_student_data(tries + 1)
-        else:
-            return "INTERNAL SERVER ERROR", 500
-
-    try:
-        session_cookie = connexion.request.cookies.get("session")
-        session_NUID = connexion.JWT_verify(session_cookie)
-        select_string = "SELECT * FROM student WHERE nuid = {}".format(session_NUID)
-        db_conn = connexion.DB(connexion.DB_ENG)
-        result = db_conn.execute(select_string)
-        db_conn.close()
-        res = []
-        for r in result.fetchall():
-            res.append({
-                "nuid": r["nuid"],
-                "email": r["email"],
-                "name": r["name"]
-            })
-        if len(r) > 0:
-            return res, 200
-        else:
-            return "User not logged in.", 400
-    except:
-        return retry()
+def logged_in_student_data():
+    session_cookie = connexion.request.cookies.get("session")
+    session_NUID = connexion.JWT_verify(session_cookie)
+    select_string = "SELECT * FROM student WHERE nuid = {}".format(session_NUID)
+    db_conn = connexion.DB(connexion.DB_ENG)
+    result = db_conn.execute(select_string)
+    db_conn.close()
+    res = []
+    for r in result.fetchall():
+        res.append({
+            "nuid": r["nuid"],
+            "email": r["email"],
+            "name": r["name"]
+        })
+    if len(res) > 0:
+        return res, 200
+    else:
+        return "User not logged in.", 400
 
 
 def create_student(body):  # noqa: E501

@@ -7,6 +7,8 @@ from swagger_server import util
 from sqlalchemy import types
 from sqlalchemy import exc
 from pymysql import err
+from swagger_server.controllers.class_prereq_group_controller import get_class_prereqs_db
+from swagger_server.controllers.class_prereq_group_controller import Prereq
 
 
 def get_section_by_crn(crn):  # noqa: E501
@@ -162,8 +164,11 @@ def list_sections_filtered(sch_opt_id):
             "part_of_degree": -1
         }
 
-        for crn, class_dept, class_number, professor, semester_id, \
-                start_time, end_time, meeting_days, cname, cdesc, part_of_degree in cursor.fetchall():
+        for crn, class_dept, class_number, \
+            professor, semester_id, \
+            start_time, end_time, meeting_days, \
+            cname, cdesc, part_of_degree \
+                in cursor.fetchall():
             if sec["crn"] == crn:
                 if not isinstance(meeting_days, type(None)):
                     sec["meeting_times"].append({
@@ -193,11 +198,36 @@ def list_sections_filtered(sch_opt_id):
                     })
         if sec["crn"] != -1:
             result.append(sec)
+
     except err.InternalError as e:
         print("ERROR", e)
     finally:
         cursor.close()
         conn.close()
+
+        db_conn = connexion.DB(connexion.DB_ENG)
+        select_string = """
+                                SELECT 
+                                    ct.class_dept,
+                                    ct.class_number
+                                FROM classes_taken AS ct
+                                NATURAL JOIN schedule_option AS sch_opt
+                                WHERE sch_opt.schedule_option_id = {};
+                                """.format(sch_opt_id)
+        result_classes_taken = db_conn.execute(select_string)
+        db_conn.close()
+        classes_taken = []
+        for row in result_classes_taken:
+            classes_taken.append({
+                'class_dept': row["class_dept"],
+                'class_number': row["class_number"]
+            })
+
+        def filter_meets_prerequisites(sec):
+            prereqs: Prereq = get_class_prereqs_db(sec["class_dept"], sec["class_number"])
+            return True if isinstance(prereqs, dict) else prereqs.meets_prereqs(classes_taken)
+
+        result = list(filter(filter_meets_prerequisites, result))
         return result, 200
 
 

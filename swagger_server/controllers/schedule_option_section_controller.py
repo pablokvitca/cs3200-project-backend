@@ -7,7 +7,7 @@ from swagger_server import util
 from sqlalchemy import exc
 
 
-def add_schedule_option_section(body, tries=0):  # noqa: E501
+def add_schedule_option_section(body):  # noqa: E501
     """Add a schedule_option_section to the classdeck
 
      # noqa: E501
@@ -17,17 +17,12 @@ def add_schedule_option_section(body, tries=0):  # noqa: E501
 
     :rtype: None
     """
-    def retry():
-        if tries < 5:
-            return add_schedule_option_section(body, tries + 1)
-        else:
-            return []
 
     if connexion.request.is_json:
         body = ScheduleOptionSection.from_dict(connexion.request.get_json())  # noqa: E501
         insert_string = """
-                    INSERT INTO schedule_option_section (schedule_option_id, section_crn)
-                        VALUES ({0}, {1});
+                    INSERT IGNORE INTO schedule_option_section (schedule_option_id, section_crn)
+                        VALUES ({0}, {1})
                     """.format(body.schedule_id, body.crn)
         try:
             session_cookie = connexion.request.cookies.get("session")
@@ -40,12 +35,10 @@ def add_schedule_option_section(body, tries=0):  # noqa: E501
             return "Could add section for schedule_option", 406
         except KeyError:
             return "Forbidden", 403
-        except:
-            return retry()
     return "Bad Request", 400
 
 
-def delete_schedule_option_section(schedule_id, crn, tries=0):  # noqa: E501
+def delete_schedule_option_section(schedule_id, crn):  # noqa: E501
     """Deletes a schedule_option_section
 
      # noqa: E501
@@ -57,9 +50,6 @@ def delete_schedule_option_section(schedule_id, crn, tries=0):  # noqa: E501
 
     :rtype: None
     """
-    def retry():
-        if tries < 5:
-            delete_schedule_option_section(schedule_id, crn, tries + 1)
 
     delete_string = "DELETE FROM schedule_option_section WHERE schedule_option_id = {0} AND section_crn = {1};"\
         .format(schedule_id, crn)
@@ -72,11 +62,5 @@ def delete_schedule_option_section(schedule_id, crn, tries=0):  # noqa: E501
         return "Accepted", 201
     except exc.IntegrityError:
         return "Could not remove section", 202
-    except exc.InterfaceError:
-        retry()
-    except exc.OperationalError:
-        retry()
-    except exc.InternalError:
-        retry()
     except KeyError:
         return "Forbidden", 403
