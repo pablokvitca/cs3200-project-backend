@@ -242,3 +242,23 @@ def mt_days_proc(mt):
             res += pos_to_day[pos]
         pos += 1
     return res
+
+
+def restrictions_by_crn(crn):
+    select_string = """
+                    SELECT * FROM restriction
+                    WHERE crn = {}
+                    """.format(crn)
+    try:
+        db_conn = connexion.DB(connexion.DB_ENG)
+        result = db_conn.execute(select_string)
+        db_conn.close()
+        res = []
+        for row in result:
+            res.append({
+                'crn': row["crn"],
+                'type': row[type]
+            })
+        return res, 200
+    except exc.IntegrityError:
+        return "Internal Server Error", 500
