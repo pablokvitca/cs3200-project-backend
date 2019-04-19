@@ -35,6 +35,8 @@ def add_schedule_option_section(body):  # noqa: E501
             return "Could add section for schedule_option", 406
         except KeyError:
             return "Forbidden", 403
+        except exc.InternalError as err:
+            return err.orig.args[1], 406
     return "Bad Request", 400
 
 

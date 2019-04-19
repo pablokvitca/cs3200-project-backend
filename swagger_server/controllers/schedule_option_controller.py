@@ -118,6 +118,7 @@ def get_schedule_option_by_nuid(nuid):  # noqa: E501
     """
     select_string = """
             SELECT
+                DISTINCT
                 opt.schedule_option_id, 
                 opt.title, 
                 opt.semester_id, 
@@ -157,15 +158,17 @@ def get_schedule_option_by_nuid(nuid):  # noqa: E501
                 class_number, professor, start_time, end_time, meeting_days, \
                 cname, cdesc, part_of_degree in result.fetchall():
                 if opt["schedule_option_id"] == schedule_option_id:
-                    opt["sections"].append({
-                        "class_dept": class_dept,
-                        "class_number": class_number,
-                        "professor": professor,
-                        "crn": crn,
-                        "cname": cname,
-                        "cdesc": cdesc,
-                        "part_of_degree": part_of_degree
-                    })
+                    mapped_crns = list(map(lambda s: s["crn"], opt["sections"]))
+                    if crn not in mapped_crns:
+                        opt["sections"].append({
+                            "class_dept": class_dept,
+                            "class_number": class_number,
+                            "professor": professor,
+                            "crn": crn,
+                            "cname": cname,
+                            "cdesc": cdesc,
+                            "part_of_degree": part_of_degree
+                        })
                 else:
                     if opt["schedule_option_id"] != -1:
                         res.append(opt)
@@ -177,15 +180,17 @@ def get_schedule_option_by_nuid(nuid):  # noqa: E501
                         "sections": []
                     }
                     if crn is not None:
-                        opt["sections"].append({
-                            "class_dept": class_dept,
-                            "class_number": class_number,
-                            "professor": professor,
-                            "crn": crn,
-                            "cname": cname,
-                            "cdesc": cdesc,
-                            "part_of_degree": part_of_degree
-                        })
+                        mapped_crns = list(map(lambda s: s["crn"], opt["sections"]))
+                        if crn not in mapped_crns:
+                            opt["sections"].append({
+                                "class_dept": class_dept,
+                                "class_number": class_number,
+                                "professor": professor,
+                                "crn": crn,
+                                "cname": cname,
+                                "cdesc": cdesc,
+                                "part_of_degree": part_of_degree
+                            })
             if opt["schedule_option_id"] != -1:
                 res.append(opt)
             return res, 201

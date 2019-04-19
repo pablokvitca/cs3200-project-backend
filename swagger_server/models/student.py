@@ -148,7 +148,7 @@ class Student(Model):
         :param password: The password of this Student.
         :type password: str
         """
-        if password is not None and len(password) < 16:
-            raise ValueError("Invalid value for `password`, length must be greater than or equal to `16`")  # noqa: E501
+        if password is not None and len(password) < 9:
+            raise ValueError("Invalid value for `password`, length must be greater than or equal to `9`")  # noqa: E501
 
         self._password = password

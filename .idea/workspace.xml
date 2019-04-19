@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="287afcb7-af8c-49d3-a468-f2bd4e2dc2be" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/swagger_server/controllers/degree_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/swagger_server/controllers/degree_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/swagger_server/controllers/pursued_degree_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/swagger_server/controllers/pursued_degree_controller.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/swagger_server/controllers/schedule_option_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/swagger_server/controllers/schedule_option_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/swagger_server/controllers/student_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/swagger_server/controllers/student_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/swagger_server/controllers/student_taken_classes_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/swagger_server/controllers/student_taken_classes_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/swagger_server/models/student_taken_classes.py" beforeDir="false" afterPath="$PROJECT_DIR$/swagger_server/models/student_taken_classes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger_server/controllers/schedule_option_section_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/swagger_server/controllers/schedule_option_section_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger_server/models/student.py" beforeDir="false" afterPath="$PROJECT_DIR$/swagger_server/models/student.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/swagger_server/swagger/swagger.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/swagger_server/swagger/swagger.yaml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -19,10 +16,34 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/swagger_server/__main__.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="140">
+              <caret line="105" column="32" selection-start-line="105" selection-start-column="32" selection-end-line="105" selection-end-column="32" />
+              <folding>
+                <element signature="e#23#39#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/swagger_server/controllers/schedule_option_section_controller.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-608">
+              <caret line="24" column="41" lean-forward="true" selection-start-line="24" selection-start-column="41" selection-end-line="24" selection-end-column="41" />
+              <folding>
+                <element signature="e#0#16#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/swagger_server/swagger/swagger.yaml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="1052" column="34" selection-start-line="1052" selection-start-column="20" selection-end-line="1052" selection-end-column="34" />
+            <state relative-caret-position="202">
+              <caret line="732" column="47" selection-start-line="732" selection-start-column="20" selection-end-line="732" selection-end-column="47" />
               <folding>
                 <element signature="e#14854#15661#0" />
               </folding>
@@ -31,13 +52,34 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/swagger_server/controllers/student_controller.py">
+        <entry file="file://$PROJECT_DIR$/swagger_server/controllers/schedule_option_controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="232">
-              <caret line="197" selection-start-line="197" selection-end-line="197" />
+            <state relative-caret-position="123">
+              <caret line="183" selection-start-line="183" selection-end-line="183" />
               <folding>
                 <element signature="e#0#16#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/swagger_server/controllers/student_controller.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="62">
+              <caret line="45" column="19" lean-forward="true" selection-start-line="45" selection-start-column="19" selection-end-line="45" selection-end-column="19" />
+              <folding>
+                <element signature="e#0#16#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/swagger_server/models/student.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2438">
+              <caret line="151" column="102" selection-start-line="151" selection-start-column="102" selection-end-line="151" selection-end-column="102" />
             </state>
           </provider>
         </entry>
@@ -46,13 +88,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>LEFT</find>
-      <find>type:</find>
-      <find>get_class_prereqs</find>
-      <find>CRN</find>
-      <find>semester</find>
-      <find>section</find>
-      <find>part_of_Degree</find>
       <find>/section</find>
       <find>filter</find>
       <find>/student/loggedin</find>
@@ -73,9 +108,16 @@
       <find>/student_</find>
       <find>call</find>
       <find>add_student_taken_classes</find>
-      <find>/student</find>
       <find>up</find>
       <find>update_student</find>
+      <find>create</find>
+      <find>/student</find>
+      <find>/student:</find>
+      <find>\</find>
+      <find>Student</find>
+      <find>`</find>
+      <find>/schedule_option/list</find>
+      <find>get_schedule_option_by_nuid</find>
     </findStrings>
     <dirStrings>
       <dir>C:\Users\Pablo\Desktop\Projects\ClassDeck\backend\swagger_server\controllers</dir>
@@ -98,16 +140,17 @@
         <option value="$PROJECT_DIR$/swagger_server/.env" />
         <option value="$PROJECT_DIR$/swagger_server/controllers/class_controller.py" />
         <option value="$PROJECT_DIR$/swagger_server/controllers/class_prereq_group_controller.py" />
-        <option value="$PROJECT_DIR$/swagger_server/controllers/schedule_option_section_controller.py" />
         <option value="$PROJECT_DIR$/swagger_server/controllers/attribute_controller.py" />
         <option value="$PROJECT_DIR$/swagger_server/controllers/section_controller.py" />
         <option value="$PROJECT_DIR$/swagger_server/controllers/degree_controller.py" />
         <option value="$PROJECT_DIR$/swagger_server/models/student_taken_classes.py" />
         <option value="$PROJECT_DIR$/swagger_server/controllers/student_taken_classes_controller.py" />
         <option value="$PROJECT_DIR$/swagger_server/controllers/pursued_degree_controller.py" />
-        <option value="$PROJECT_DIR$/swagger_server/controllers/schedule_option_controller.py" />
-        <option value="$PROJECT_DIR$/swagger_server/swagger/swagger.yaml" />
         <option value="$PROJECT_DIR$/swagger_server/controllers/student_controller.py" />
+        <option value="$PROJECT_DIR$/swagger_server/controllers/schedule_option_section_controller.py" />
+        <option value="$PROJECT_DIR$/swagger_server/models/student.py" />
+        <option value="$PROJECT_DIR$/swagger_server/swagger/swagger.yaml" />
+        <option value="$PROJECT_DIR$/swagger_server/controllers/schedule_option_controller.py" />
       </list>
     </option>
   </component>
@@ -507,16 +550,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/swagger_server/controllers/schedule_option_section_controller.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
-          <caret line="62" column="30" lean-forward="true" selection-start-line="62" selection-start-column="30" selection-end-line="62" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#16#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/swagger_server/controllers/section_controller.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="146">
@@ -525,16 +558,6 @@
             <element signature="e#0#16#0" expanded="true" />
             <element signature="e#7122#7504#0" />
             <element signature="e#7722#7896#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/swagger_server/__main__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="151">
-          <caret line="56" selection-start-line="56" selection-end-line="56" />
-          <folding>
-            <element signature="e#23#39#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -583,30 +606,57 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/swagger_server/controllers/schedule_option_controller.py">
+    <entry file="file://$PROJECT_DIR$/swagger_server/__main__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="46">
-          <caret line="57" column="8" selection-start-line="57" selection-start-column="8" selection-end-line="58" selection-end-column="59" />
+        <state relative-caret-position="140">
+          <caret line="105" column="32" selection-start-line="105" selection-start-column="32" selection-end-line="105" selection-end-column="32" />
+          <folding>
+            <element signature="e#23#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/swagger_server/controllers/schedule_option_section_controller.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-608">
+          <caret line="24" column="41" lean-forward="true" selection-start-line="24" selection-start-column="41" selection-end-line="24" selection-end-column="41" />
           <folding>
             <element signature="e#0#16#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/swagger_server/controllers/student_controller.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="62">
+          <caret line="45" column="19" lean-forward="true" selection-start-line="45" selection-start-column="19" selection-end-line="45" selection-end-column="19" />
+          <folding>
+            <element signature="e#0#16#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/swagger_server/models/student.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2438">
+          <caret line="151" column="102" selection-start-line="151" selection-start-column="102" selection-end-line="151" selection-end-column="102" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/swagger_server/swagger/swagger.yaml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="1052" column="34" selection-start-line="1052" selection-start-column="20" selection-end-line="1052" selection-end-column="34" />
+        <state relative-caret-position="202">
+          <caret line="732" column="47" selection-start-line="732" selection-start-column="20" selection-end-line="732" selection-end-column="47" />
           <folding>
             <element signature="e#14854#15661#0" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/swagger_server/controllers/student_controller.py">
+    <entry file="file://$PROJECT_DIR$/swagger_server/controllers/schedule_option_controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="232">
-          <caret line="197" selection-start-line="197" selection-end-line="197" />
+        <state relative-caret-position="123">
+          <caret line="183" selection-start-line="183" selection-end-line="183" />
           <folding>
             <element signature="e#0#16#0" expanded="true" />
           </folding>

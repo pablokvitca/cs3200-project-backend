@@ -1654,7 +1654,7 @@ definitions:
       password:
         type: "string"
         format: "password"
-        minLength: 16
+        minLength: 9
     example:
       nuid: 1
       email: "example@example.com"
