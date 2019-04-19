@@ -703,6 +703,27 @@ paths:
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.pursued_degree_controller"
+  /schedule_option/duplicate/{sch_opt_id}:
+    get:
+      tags:
+        - "section"
+      summary: "Duplicates a schedule option"
+      operationId: "duplicate_schedule_option"
+      parameters:
+        - name: "sch_opt_id"
+          in: "path"
+          description: "sch_opt_id of the schedule_option to duplicate"
+          required: true
+          type: "integer"
+          minimum: 0
+      responses:
+        200:
+          description: "Accepted"
+        500:
+          description: "Server error"
+      security:
+        - internal_auth: []
+      x-swagger-router-controller: "swagger_server.controllers.schedule_option_controller"
   /schedule_option/list_by_student/{nuid}:
     get:
       tags:
@@ -750,6 +771,32 @@ paths:
           description: "Invalid input"
       security:
       - classdeck_auth: []
+      x-swagger-router-controller: "swagger_server.controllers.schedule_option_controller"
+    put:
+      tags:
+        - "schedule_option"
+      summary: "Update an existing schedule_option"
+      operationId: "update_schedule_option"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "ScheduleOption object that needs to be updated in the system"
+          required: true
+          schema:
+            $ref: "#/definitions/ScheduleOption"
+      responses:
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "ScheduleOption not found"
+        405:
+          description: "Validation exception"
+      security:
+        - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.schedule_option_controller"
   /schedule_option/{schedule_option_id}:
     delete:
@@ -844,7 +891,7 @@ paths:
       security:
       - internal_auth: []
       x-swagger-router-controller: "swagger_server.controllers.section_controller"
-  /section/filtered/{sch_opt_id}:
+  /section/filtered/{sch_opt_id}/{search_query}:
     get:
       tags:
       - "section"
@@ -861,6 +908,11 @@ paths:
         required: true
         type: "integer"
         minimum: 0
+      - name: "search_query"
+        in: "path"
+        description: "search query to filter by"
+        required: true
+        type: "string"
       responses:
         405:
           description: "Invalid input"

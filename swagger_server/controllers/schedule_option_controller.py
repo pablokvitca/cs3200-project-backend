@@ -62,9 +62,44 @@ def delete_schedule_option(schedule_option_id):  # noqa: E501
         db_conn.close()
         return "Accepted", 201
     except exc.IntegrityError:
-        return "Could not add pursued degree", 406
+        return "Could not delete schedule option", 406
     except KeyError:
         return "Forbidden", 403
+
+
+def duplicate_schedule_option(sch_opt_id):
+    try:
+        session_cookie = connexion.request.cookies.get("session")
+        session_NUID = connexion.JWT_verify(session_cookie)
+        db_conn = connexion.DB_ENG.raw_connection()
+        cursor = db_conn.cursor()
+        cursor.callproc("duplicate_schedule_option", [sch_opt_id])
+        db_conn.commit()
+        cursor.close()
+        db_conn.close()
+        return "Accepted", 200
+    except exc.IntegrityError:
+        return "Server error", 500
+    except KeyError:
+        return "Forbidden", 403
+
+
+def update_schedule_option():
+    if connexion.request.is_json:
+        body: ScheduleOption = ScheduleOption.from_dict(connexion.request.get_json())  # noqa: E501
+        update_string = """
+            UPDATE schedule_option
+            SET title  = "{1}"
+            WHERE schedule_option_id = {0};
+            """.format(body.schedule_id, body.title)
+        try:
+            db_conn = connexion.DB(connexion.DB_ENG)
+            db_conn.execute(update_string)
+            db_conn.close()
+            return "Accepted", 201
+        except exc.IntegrityError:
+            return "Already Exists", 202
+    return "Bad Request", 400
 
 
 def get_schedule_option_by_nuid(nuid):  # noqa: E501

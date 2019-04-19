@@ -9,6 +9,7 @@ from sqlalchemy import exc
 from pymysql import err
 from swagger_server.controllers.class_prereq_group_controller import get_class_prereqs_db
 from swagger_server.controllers.class_prereq_group_controller import Prereq
+import re
 
 
 def get_section_by_crn(crn):  # noqa: E501
@@ -145,13 +146,14 @@ def list_sections():  # noqa: E501
         return "Internal Server Error", 500
 
 
-def list_sections_filtered(sch_opt_id):
+def list_sections_filtered(sch_opt_id, search_query):
     conn = connexion.DB_ENG.raw_connection()
     cursor = conn.cursor()
 
     result = []
     try:
-        res = cursor.callproc("select_filtered_sections", [sch_opt_id])
+        search_query = re.sub(' ', '%', search_query)
+        res = cursor.callproc("select_filtered_sections", [sch_opt_id, search_query])
         sec = {
             "crn": -1,
             "class_dept": -1,
@@ -198,9 +200,9 @@ def list_sections_filtered(sch_opt_id):
                     })
         if sec["crn"] != -1:
             result.append(sec)
-
     except err.InternalError as e:
         print("ERROR", e)
+        return "Internal Server error", 500
     finally:
         cursor.close()
         conn.close()
