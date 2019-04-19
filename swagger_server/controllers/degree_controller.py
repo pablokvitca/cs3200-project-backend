@@ -78,7 +78,7 @@ def get_degree_by_id(degree_id):  # noqa: E501
         return "Internal Server Error", 500
 
 
-def list_degrees(tries=0):  # noqa: E501
+def list_degrees():  # noqa: E501
     """List all degrees
 
      # noqa: E501
@@ -86,12 +86,6 @@ def list_degrees(tries=0):  # noqa: E501
 
     :rtype: None
     """
-    def retry():
-        if tries < 5:
-            return list_degrees(tries + 1)
-        else:
-            return "INTERNAL SERVER ERROR", 500
-
     select_string = """
             SELECT * FROM degree;
             """
@@ -106,8 +100,6 @@ def list_degrees(tries=0):  # noqa: E501
         return res, 200
     except exc.IntegrityError:
         return "Internal Server Error", 500
-    except:
-        return retry()
 
 
 def list_degrees_by_college(college_id):  # noqa: E501

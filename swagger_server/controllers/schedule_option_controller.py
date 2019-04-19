@@ -43,7 +43,7 @@ def add_schedule_option(body):  # noqa: E501
     return "Bad Request", 400
 
 
-def delete_schedule_option(schedule_option_id, tries=0):  # noqa: E501
+def delete_schedule_option(schedule_option_id):  # noqa: E501
     """Deletes a schedule_option
 
      # noqa: E501
@@ -53,13 +53,6 @@ def delete_schedule_option(schedule_option_id, tries=0):  # noqa: E501
 
     :rtype: None
     """
-
-    def retry():
-        if tries < 5:
-            return delete_schedule_option(schedule_option_id, tries + 1)
-        else:
-            return "I'm Done", 420
-
     delete_string = "DELETE FROM schedule_option WHERE schedule_option_id = {0};".format(schedule_option_id)
     try:
         session_cookie = connexion.request.cookies.get("session")
@@ -70,12 +63,6 @@ def delete_schedule_option(schedule_option_id, tries=0):  # noqa: E501
         return "Accepted", 201
     except exc.IntegrityError:
         return "Could not add pursued degree", 406
-    except exc.InterfaceError:
-        retry()
-    except exc.OperationalError:
-        retry()
-    except exc.InternalError:
-        retry()
     except KeyError:
         return "Forbidden", 403
 
