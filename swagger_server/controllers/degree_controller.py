@@ -61,16 +61,16 @@ def get_degree_by_id(degree_id):  # noqa: E501
     """
     select_string = """
                     SELECT * FROM degree
-                    WHERE degree_ID = "{}"
+                    WHERE degree_id = "{}"
                     """.format(degree_id)
     try:
         result = connexion.DB.execute(select_string)
         for row in result:
             res = {
                 'name': row["name"],
-                'degree_ID': row["degree_ID"],
+                'degree_id': row["degree_id"],
                 'degree_type': row["degree_type"],
-                'college_ID': row["college_ID"]
+                'college_id': row["college_id"]
             }
             return res, 200
         return "Object not found", 404
@@ -114,7 +114,7 @@ def list_degrees_by_college(college_id):  # noqa: E501
     """
     select_string = """
                         SELECT * FROM degree
-                        WHERE college_ID = "{}"
+                        WHERE college_id = "{}"
                         """.format(college_id)
     try:
         db_conn = connexion.DB(connexion.DB_ENG)
@@ -123,9 +123,9 @@ def list_degrees_by_college(college_id):  # noqa: E501
         for row in result:
             res = {
                 'name': row["name"],
-                'degree_ID': row["degree_ID"],
+                'degree_id': row["degree_id"],
                 'degree_type': row["degree_type"],
-                'college_ID': row["college_ID"]
+                'college_id': row["college_id"]
             }
             return res, 200
         return "Object not found", 404

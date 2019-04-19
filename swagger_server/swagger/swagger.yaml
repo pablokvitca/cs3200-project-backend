@@ -1045,6 +1045,25 @@ paths:
         default:
           description: "successful operation"
       x-swagger-router-controller: "swagger_server.controllers.student_controller"
+    put:
+      tags:
+        - "student"
+      summary: "Update student"
+      description: "This can only be done by the logged in student."
+      operationId: "update_student"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Student object to update"
+          required: true
+          schema:
+            $ref: "#/definitions/Student"
+      responses:
+        default:
+          description: "successful operation"
+      x-swagger-router-controller: "swagger_server.controllers.student_controller"
   /student/loggedin:
     get:
       tags:
@@ -1130,35 +1149,6 @@ paths:
             $ref: "#/definitions/Student"
         400:
           description: "Invalid nuid supplied"
-        404:
-          description: "Student not found"
-      security:
-      - classdeck_auth: []
-      x-swagger-router-controller: "swagger_server.controllers.student_controller"
-    put:
-      tags:
-      - "student"
-      summary: "Updated student"
-      description: "This can only be done by the logged in student."
-      operationId: "update_student"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "nuid"
-        in: "path"
-        description: "nuid that need to be updated"
-        required: true
-        type: "integer"
-        minimum: 1
-      - in: "body"
-        name: "body"
-        description: "Updated student object"
-        required: true
-        schema:
-          $ref: "#/definitions/Student"
-      responses:
-        400:
-          description: "Invalid student supplied"
         404:
           description: "Student not found"
       security:

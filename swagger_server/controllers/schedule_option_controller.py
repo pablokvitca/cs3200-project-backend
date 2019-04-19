@@ -93,12 +93,16 @@ def update_schedule_option():
             WHERE schedule_option_id = {0};
             """.format(body.schedule_id, body.title)
         try:
+            session_cookie = connexion.request.cookies.get("session")
+            session_NUID = connexion.JWT_verify(session_cookie)
             db_conn = connexion.DB(connexion.DB_ENG)
             db_conn.execute(update_string)
             db_conn.close()
             return "Accepted", 201
         except exc.IntegrityError:
             return "Already Exists", 202
+        except KeyError:
+            return "Forbidden", 403
     return "Bad Request", 400
 
 

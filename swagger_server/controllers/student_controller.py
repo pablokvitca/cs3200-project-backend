@@ -45,16 +45,8 @@ def create_student(body):  # noqa: E501
     if connexion.request.is_json:
         body = Student.from_dict(connexion.request.get_json())  # noqa: E501
         insert_string = """
-            INSERT INTO student (
-                name,
-                email,
-                NUID,
-                pass)
-            VALUES (
-                "{0}",
-                "{1}",
-                {2},
-                "{3}");
+            INSERT INTO student (name, email, nuid, pass)
+            VALUES ("{0}", "{1}", {2}, "{3}");
             """.format(body.name, body.email, body.nuid, body.password)
         try:
             db_conn = connexion.DB(connexion.DB_ENG)
@@ -81,12 +73,16 @@ def delete_student(nuid):  # noqa: E501
         WHERE nuid = "{}"
         """.format(nuid)
     try:
+        session_cookie = connexion.request.cookies.get("session")
+        session_NUID = connexion.JWT_verify(session_cookie)
         db_conn = connexion.DB(connexion.DB_ENG)
         db_conn.execute(delete_string)
         db_conn.close()
         return "Deleted", 204
     except exc.IntegrityError:
         return "Could not delete object", 403
+    except KeyError:
+        return "Forbidden", 403
 
 
 def get_student_by_nuid(nuid):  # noqa: E501
@@ -181,7 +177,7 @@ def logout_student():  # noqa: E501
     return resp
 
 
-def update_student(nuid, body):  # noqa: E501
+def update_student(body):  # noqa: E501
     """Updated student
 
     This can only be done by the logged in student. # noqa: E501
@@ -195,4 +191,20 @@ def update_student(nuid, body):  # noqa: E501
     """
     if connexion.request.is_json:
         body = Student.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        update_string = """
+            UPDATE student
+            SET pass = "{1}"
+            WHERE nuid = {0};
+            """.format(body.nuid, body.password)
+        try:
+            session_cookie = connexion.request.cookies.get("session")
+            session_NUID = connexion.JWT_verify(session_cookie)
+            db_conn = connexion.DB(connexion.DB_ENG)
+            db_conn.execute(update_string)
+            db_conn.close()
+            return "Accepted", 201
+        except exc.IntegrityError:
+            return "Already Exists", 202
+        except KeyError:
+            return "Forbidden", 403
+    return "Bad Request", 400

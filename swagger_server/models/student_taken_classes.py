@@ -15,7 +15,7 @@ class StudentTakenClasses(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, nuid: int=None, class_dept: str=None, class_number: int=None, transferred: bool=None, current: bool=None):  # noqa: E501
+    def __init__(self, nuid: int=None, class_dept: str=None, class_number: int=None, transferred: bool=False, current: bool=False):  # noqa: E501
         """StudentTakenClasses - a model defined in Swagger
 
         :param nuid: The nuid of this StudentTakenClasses.  # noqa: E501

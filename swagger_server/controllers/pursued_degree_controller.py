@@ -25,9 +25,9 @@ def add_pursued_degree(body):  # noqa: E501
     if connexion.request.is_json:
         body = PursuedDegree.from_dict(connexion.request.get_json())  # noqa: E501
         insert_string = """
-            INSERT INTO pursued_degree (
-                NUID,
-                degree_ID)
+            INSERT IGNORE INTO pursued_degree (
+                nuid,
+                degree_id)
             VALUES ({0}, {1});
             """.format(body.nuid, body.degree_id)
         try:
